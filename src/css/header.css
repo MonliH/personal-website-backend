@@ -1,0 +1,52 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
+
+.header {
+    overflow: hidden;
+    background-color: #1D1D1D;
+    background-color: rgba(29, 29, 29, 0.5);
+    border-bottom: 1px solid #171717;
+    z-index: 100;
+    white-space: nowrap;
+    position: fixed;
+    width: 100vw;
+    height: 50px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.header-links {
+    font: 15px Montserrat, sans-serif;
+    float: right;
+    display: flex;
+    flex: 0 0;
+    margin-right: 30px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.header-link {
+    font: 15px Montserrat, sans-serif;
+    color: white;
+    text-decoration: none;
+    padding-left: 30px;
+}
+
+.header-name {
+    font: bold 20px Montserrat, sans-serif;
+    margin-bottom: 20px;
+    float: left;
+    color: white;
+    text-decoration: none;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#header-image {
+    margin-top: -2px;
+    float: right;
+    width: 27px;
+    height: 27px;
+}
+
