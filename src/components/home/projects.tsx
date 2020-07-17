@@ -22,7 +22,6 @@ interface Project {
     link: string,
     tags: Array<Tag>
     description: string,
-    visible: boolean
 }
 
 const project_list: Array<Project> = [
@@ -32,7 +31,6 @@ const project_list: Array<Project> = [
         link: "https://github.com/fluo-lang/fluoc",
         tags: [Tag.Rust],
         description: "a compiled programming language",
-        visible: true
     },
 
     {
@@ -41,7 +39,6 @@ const project_list: Array<Project> = [
         link: "https://github.com/MonliH/adai",
         tags: [Tag.Python, Tag.ML],
         description: "alzheimer's disease ai",
-        visible: true
     },
 
     {
@@ -50,7 +47,6 @@ const project_list: Array<Project> = [
         link: "https://github.com/MonliH/emurs",
         tags: [Tag.Rust],
         description: "an emulator for the 8080 microprocessor",
-        visible: true
     },
 
     {
@@ -59,7 +55,6 @@ const project_list: Array<Project> = [
         link: "https://github.com/MonliH/audioify",
         tags: [Tag.Typescript, Tag.React],
         description: "generate music from code",
-        visible: true
     },
 
     {
@@ -68,7 +63,6 @@ const project_list: Array<Project> = [
         link: "https://github.com/MonliH/iNNteractive",
         tags: [Tag.Python, Tag.ML],
         description: "interactive neural networks behind a GUI",
-        visible: true
     },
 
     {
@@ -77,7 +71,6 @@ const project_list: Array<Project> = [
         link: "https://github.com/MonliH/four-ai",
         tags: [Tag.Rust],
         description: "neural networks trained with genetic algorithm that play connect four",
-        visible: true
     },
 
     {
@@ -86,7 +79,6 @@ const project_list: Array<Project> = [
         link: "https://github.com/MonliH/personal-website",
         tags: [Tag.Typescript, Tag.React],
         description: "you're looking at it right now",
-        visible: true
     },
 
 ];
@@ -139,11 +131,9 @@ const ProjectGrid = (p: ProjectGridProps) => {
         const col = counter_col;
         const row = counter_row;
 
-        if (child.visible) {
-            counter_col++;
-        }
+        counter_col++;
 
-        if ((i % columns === columns-1) && child.visible) {
+        if ((i % columns === columns-1)) {
             counter_row++;
             counter_col = 0;
         }
@@ -199,7 +189,7 @@ const ProjectGrid = (p: ProjectGridProps) => {
 }
 
 const Projects = () => {
-    const [items, itemsSet] = useState(project_list);
+    const [items, set_items] = useState(project_list);
     const [ref, visible] = useInView({
         triggerOnce: true
     });
