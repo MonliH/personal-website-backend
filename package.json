@@ -12,6 +12,7 @@
     "react-router-dom": "^5.2.0",
     "react-router-hash-link": "^2.0.0",
     "react-scripts": "3.4.1",
+    "react-spring": "9.0.0-rc.3",
     "typescript": "~3.7.2"
   },
   "scripts": {
