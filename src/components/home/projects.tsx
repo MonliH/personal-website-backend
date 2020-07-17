@@ -1,5 +1,5 @@
 
-import React, { useRef, useState, useLayoutEffect, useEffect } from "react";
+import React, { useState, useLayoutEffect, useEffect } from "react";
 import { useTransition, animated, useSpring } from "react-spring";
 
 import "../../css/projects.css";
@@ -153,7 +153,7 @@ const ProjectGrid = (p: ProjectGridProps) => {
     });
 
     const transitions = useTransition(grid_items, {
-        from: () => ({ xy: [0, 0], width: cardw, height: cardh, opacity: 0 }),
+        from: () => ({ xy: [0, 0], width: cardw, height: cardh, opacity: 1 }),
         enter: ({ xy }) => ({ xy, width: cardw, height: cardh, opacity: 1 }),
         update: ({ xy }) => ({ xy, width: cardw, height: cardh, }),
         leave: { height: 0, opacity: 0 },
@@ -175,7 +175,19 @@ const ProjectGrid = (p: ProjectGridProps) => {
         );
     });
 
-    const anims = useSpring({height: (counter_row + 1) * (cardh + cardhm), width: columns * (cardw + cardwm)});
+    const [first_anim, set_first_anim] = useState(true);
+
+    let spring_options: { from: undefined | object, to: object } = {
+        from: undefined,
+        to: {height: (counter_row + 1) * (cardh + cardhm) + 100, width: columns * (cardw + cardwm)}
+    };
+
+    if (first_anim) {
+        set_first_anim(false);
+        spring_options.from = {height: (counter_row + 1) * (cardh + cardhm) + 100, width: columns * (cardw + cardwm)};
+    }
+
+    const anims = useSpring(spring_options);
 
     return (
         <animated.div id="project-grid" style={anims}>
