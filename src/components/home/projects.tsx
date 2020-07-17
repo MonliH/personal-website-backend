@@ -181,12 +181,12 @@ const ProjectGrid = (p: ProjectGridProps) => {
 
     let spring_options: { from: undefined | object, to: object } = {
         from: undefined,
-        to: {height: (counter_row + 1) * (cardh + cardhm) + 100, width: columns * (cardw + cardwm)}
+        to: {height: (counter_row + 1) * (cardh + cardhm), width: columns * (cardw + cardwm)}
     };
 
     if (first_anim) {
         set_first_anim(false);
-        spring_options.from = {height: (counter_row + 1) * (cardh + cardhm) + 100, width: columns * (cardw + cardwm)};
+        spring_options.from = {height: (counter_row + 1) * (cardh + cardhm),  width: columns * (cardw + cardwm)};
     }
 
     const anims = useSpring(spring_options);
@@ -200,7 +200,7 @@ const ProjectGrid = (p: ProjectGridProps) => {
 
 const Projects = () => {
     const [items, itemsSet] = useState(project_list);
-    const [ref, visible, entry] = useInView({
+    const [ref, visible] = useInView({
         triggerOnce: true
     });
 
