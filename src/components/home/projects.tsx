@@ -1,6 +1,7 @@
-
 import React, { useState, useLayoutEffect, useEffect } from "react";
 import { useTransition, animated, useSpring } from "react-spring";
+
+import { useInView } from "react-intersection-observer";
 
 import "../../css/projects.css";
 
@@ -104,7 +105,8 @@ function useWindowSize() {
 }
 
 interface ProjectGridProps {
-    items: Array<Project>
+    items: Array<Project>,
+    visible: boolean,
 }
 
 interface ProjectPosition {
@@ -153,9 +155,9 @@ const ProjectGrid = (p: ProjectGridProps) => {
     });
 
     const transitions = useTransition(grid_items, {
-        from: () => ({ xy: [0, 0], width: cardw, height: cardh, opacity: 1 }),
-        enter: ({ xy }) => ({ xy, width: cardw, height: cardh, opacity: 1 }),
-        update: ({ xy }) => ({ xy, width: cardw, height: cardh, }),
+        from: () => ({ xy: [0, 0], width: cardw, height: cardh, opacity: 0 }),
+        enter: ({ xy }) => ({ xy: p.visible ? xy : [0, 0], width: cardw, height: cardh, opacity: p.visible? 1 : 0 }),
+        update: ({ xy }) => ({ xy: p.visible ? xy : [0, 0], width: cardw, height: cardh, opacity: p.visible? 1 : 0 }),
         leave: { height: 0, opacity: 0 },
         config: { mass: 5, tension: 500, friction: 100 },
         keys: (item: ProjectPosition) => item.project.rank
@@ -198,10 +200,13 @@ const ProjectGrid = (p: ProjectGridProps) => {
 
 const Projects = () => {
     const [items, itemsSet] = useState(project_list);
+    const [ref, visible, entry] = useInView({
+        triggerOnce: true
+    });
 
     return (
-        <div id="projects">
-            <ProjectGrid items={items}></ProjectGrid>
+        <div id="projects" ref={ref}>
+            <ProjectGrid items={items} visible={visible}></ProjectGrid>
         </div>
     )
 }
