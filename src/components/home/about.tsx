@@ -10,7 +10,7 @@ const About = () => {
     let video_element = useRef(null);
     return (
         <div className="wrapper-center">
-            <div id="about">
+            <div id="about" className="wrapper-inner">
                 <pre className="title" style={{marginLeft: "50px"}}>About Me</pre>
                 <div id="about-me-section">
                     <video onMouseEnter={() => Video.enter(video_element)} onMouseLeave={() => Video.leave(video_element)} id="about-vid" ref={video_element} playsInline muted loop >

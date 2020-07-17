@@ -8,3 +8,9 @@
     justify-content: center;
 }
 
+.wrapper-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+

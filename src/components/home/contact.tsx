@@ -6,7 +6,7 @@ const Contact = () => {
     let [status, set_status] = useState("");
     return (
         <div className="wrapper-center">
-            <div>
+            <div className="wrapper-inner">
                 <pre className="title">Contact Me</pre>
                 <form 
                     id="contact-form"
