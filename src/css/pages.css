@@ -17,7 +17,6 @@
     height: 70vh;
     width: 100vw;
     padding: 0;
-   
 }
 
 #title-image {
@@ -45,15 +44,25 @@
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#262626", endColorstr="#1d1d1d", GradientType=1);
 }
 
+#about {
+    padding-top: 16vh;
+    margin-top: -20vh;
+    margin-bottom: 10vh;
+}
+
 #about-vid {
     height: 50vh;
     width: 50vh;
     filter: brightness(1.1) contrast(105%) saturate(135%);
 }
 
+#contact {
+    padding-top: 15vh;
+}
+
 #contact-form {
     width: fit-content;
-    margin: 100px auto 0;
+    margin-top: 40px;
     display: flex;
     flex-direction: column;
     width: 500px;

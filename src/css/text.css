@@ -59,20 +59,20 @@
     background: -webkit-linear-gradient(180deg, rgba(56, 56, 56, 1) 0%, rgba(56, 56, 56, 1) 100%) no-repeat;
     background: linear-gradient(180deg, rgba(56, 56, 56, 1) 0%, rgba(56, 56, 56, 1) 100%) no-repeat;
     background-position: left 19px top 40px;
-    margin: 0 auto;
+    margin-left: -9px;
 }
 
 #about-text {
     text-align: left;
     width: 370px;
     color: white;
-    font: 300 17px Lato, sans-serif;
+    font: 400 18px Lato, sans-serif;
 }
 
 #about-me-section {
-    margin-top: 70px;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: -70px;
 }
 

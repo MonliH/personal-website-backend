@@ -84,7 +84,7 @@ const project_list: Array<Project> = [
         rank: 6,
         link: "https://github.com/MonliH/personal-website",
         tags: [Tag.Typescript, Tag.React],
-        description: "my personal website (you don't say...)",
+        description: "you're looking at it right now",
         visible: true
     },
 
