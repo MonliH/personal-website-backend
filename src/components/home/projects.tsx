@@ -1,6 +1,6 @@
 
 import React, { useRef, useState, useLayoutEffect, useEffect } from "react";
-import { useTransition, animated } from "react-spring";
+import { useTransition, animated, useSpring } from "react-spring";
 
 import "../../css/projects.css";
 
@@ -173,37 +173,19 @@ const ProjectGrid = (p: ProjectGridProps) => {
                 </div>
             </animated.div>
         );
-    })
+    });
+
+    const anims = useSpring({height: (counter_row + 1) * (cardh + cardhm), width: columns * (cardw + cardwm)});
 
     return (
-        <div id="project-grid" style={{height: (counter_row + 1) * (cardh + cardhm), width: columns * (cardw + cardwm)}}>
+        <animated.div id="project-grid" style={anims}>
             {fragment}
-        </div>
+        </animated.div>
     );
-}
-
-function shuffle(array: Array<Project>) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
-
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-        // Pick a remaining element...
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-
-        // And swap it with the current element.
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
-
-    return array;
 }
 
 const Projects = () => {
     const [items, itemsSet] = useState(project_list);
-
-    useEffect(() => void setInterval(() => itemsSet(shuffle(items)), 2000), []); 
 
     return (
         <div id="projects">
