@@ -7,13 +7,33 @@ import "../../css/projects.css";
 
 enum Tag {
     // Languages
-    Typescript,
-    Rust,
-    Python,
+    Typescript = "Typescript",
+    Rust = "Rust",
+    Python = "Python",
     
     // Libraries/frameworks
-    React,
-    ML,
+    React = "React",
+    ML = "Machine Learning",
+}
+
+const tag_color = (tag: Tag) => {
+    switch (tag) {
+        case Tag.Rust: {
+            return "#dea584";
+        }
+        case Tag.Typescript: {
+            return "#2b7489";
+        }
+        case Tag.Python: {
+            return "#3572a5";
+        }
+        case Tag.React: {
+            return "#38d138";
+        }
+        case Tag.ML: {
+            return "#9636d1";
+        }
+    }
 }
 
 interface Project {
@@ -34,24 +54,8 @@ const project_list: Array<Project> = [
     },
 
     {
-        display_name: "adai",
-        rank: 1,
-        link: "https://github.com/MonliH/adai",
-        tags: [Tag.Python, Tag.ML],
-        description: "alzheimer's disease ai",
-    },
-
-    {
-        display_name: "emu-rs",
-        rank: 2,
-        link: "https://github.com/MonliH/emurs",
-        tags: [Tag.Rust],
-        description: "an emulator for the 8080 microprocessor",
-    },
-
-    {
         display_name: "audioify",
-        rank: 3,
+        rank: 2,
         link: "https://github.com/MonliH/audioify",
         tags: [Tag.Typescript, Tag.React],
         description: "generate music from code",
@@ -59,23 +63,40 @@ const project_list: Array<Project> = [
 
     {
         display_name: "iNNteractive",
-        rank: 4,
+        rank: 3,
         link: "https://github.com/MonliH/iNNteractive",
         tags: [Tag.Python, Tag.ML],
         description: "interactive neural networks behind a GUI",
     },
 
     {
-        display_name: "four-ai",
-        rank: 5,
-        link: "https://github.com/MonliH/four-ai",
+        display_name: "emu-rs",
+        rank: 4,
+        link: "https://github.com/MonliH/emurs",
         tags: [Tag.Rust],
+        description: "an emulator for the 8080 microprocessor",
+    },
+
+
+    {
+        display_name: "pyarkovchain",
+        rank: 5,
+        link: "https://github.com/MonliH/pyarkovchain",
+        tags: [Tag.Python],
+        description: "a markov chain library for python",
+    },
+
+    {
+        display_name: "four-ai",
+        rank: 6,
+        link: "https://github.com/MonliH/four-ai",
+        tags: [Tag.Rust, Tag.ML],
         description: "neural networks trained with genetic algorithm that play connect four",
     },
 
     {
         display_name: "personal-website",
-        rank: 6,
+        rank: 7,
         link: "https://github.com/MonliH/personal-website",
         tags: [Tag.Typescript, Tag.React],
         description: "you're looking at it right now",
@@ -113,7 +134,7 @@ const ProjectGrid = (p: ProjectGridProps) => {
     // Card width
     const cardw = 300;
     // Card height
-    const cardh = 350;
+    const cardh = 200;
 
 
     // Card width margin
@@ -155,9 +176,25 @@ const ProjectGrid = (p: ProjectGridProps) => {
 
     const fragment = transitions((style: any, item: ProjectPosition) => {
         let {xy, ...others} = style;
+        
+        let tags = new Array(item.project.tags.length);
+
+        for ( const [i, tag] of item.project.tags.entries() ) {
+            tags.push((
+                <span className="project-tag" key={i}>
+                    <div className="project-circle" style={{backgroundColor: tag_color(tag)}}></div>
+                    {tag as string}
+                </span>
+            ));
+        }
+
         return (
             <animated.div key={item.project.rank} style={{ position: "absolute", transform: xy.interpolate((x: number, y: number) => `translate3d(${x}px, ${y}px, 0px)`), ...others}}>
                 <div className="project-card" style={{ width: cardw, height: cardh }}>
+                    <div className="project-tags">
+                        {tags}
+                    </div>
+
                     <div className="project-texts">
                         <div className="project-title">{item.project.display_name}</div>
                         <div className="project-text">{item.project.description}</div>
