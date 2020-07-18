@@ -117,6 +117,38 @@ function useWindowSize() {
     return size;
 }
 
+interface ProjectCardProps {
+    project: Project,
+    cardw: number,
+    cardh: number
+}
+
+const ProjectCard = (p: ProjectCardProps) => {
+    let tags = new Array(p.project.tags.length);
+
+    for ( const [i, tag] of p.project.tags.entries() ) {
+        tags.push((
+            <span className="project-tag" key={i}>
+                <div className="project-circle" style={{backgroundColor: tag_color(tag)}}></div>
+                {tag as string}
+            </span>
+        ));
+    }
+
+    return (
+        <div className="project-card" style={{ width: p.cardw, height: p.cardh }}>
+            <div className="project-tags">
+                {tags}
+            </div>
+
+            <div className="project-texts">
+                <div className="project-title">{p.project.display_name}</div>
+                <div className="project-text">{p.project.description}</div>
+            </div>
+        </div>
+    );
+}
+
 interface ProjectGridProps {
     items: Array<Project>,
     visible: boolean,
@@ -177,29 +209,9 @@ const ProjectGrid = (p: ProjectGridProps) => {
     const fragment = transitions((style: any, item: ProjectPosition) => {
         let {xy, ...others} = style;
         
-        let tags = new Array(item.project.tags.length);
-
-        for ( const [i, tag] of item.project.tags.entries() ) {
-            tags.push((
-                <span className="project-tag" key={i}>
-                    <div className="project-circle" style={{backgroundColor: tag_color(tag)}}></div>
-                    {tag as string}
-                </span>
-            ));
-        }
-
         return (
             <animated.div key={item.project.rank} style={{ position: "absolute", transform: xy.interpolate((x: number, y: number) => `translate3d(${x}px, ${y}px, 0px)`), ...others}}>
-                <div className="project-card" style={{ width: cardw, height: cardh }}>
-                    <div className="project-tags">
-                        {tags}
-                    </div>
-
-                    <div className="project-texts">
-                        <div className="project-title">{item.project.display_name}</div>
-                        <div className="project-text">{item.project.description}</div>
-                    </div>
-                </div>
+                <ProjectCard project={item.project} cardh={cardh} cardw={cardw}></ProjectCard>
             </animated.div>
         );
     });
