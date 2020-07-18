@@ -142,6 +142,16 @@ const ProjectCard = (p: ProjectCardProps) => {
         ));
     }
 
+    let [anim, set] = useSpring(() => ({ textDecorationColor: "rgba(0, 0, 0, 0)" }));
+
+    const on_mouse_enter = () => {
+        set({textDecorationColor: "rgba(21, 161, 255, 255)"});
+    };
+
+    const on_mouse_leave = () => {
+        set({textDecorationColor: "rgba(0, 0, 0, 0)"});
+    };
+
     return (
         <div className="project-card" style={{ width: p.cardw, height: p.cardh }}>
             <div className="project-tags">
@@ -149,7 +159,7 @@ const ProjectCard = (p: ProjectCardProps) => {
             </div>
 
             <div className="project-texts">
-                <div className="project-title">{p.project.display_name}</div>
+                <animated.a href={p.project.link} target="_blank" onMouseEnter={on_mouse_enter} onMouseLeave={on_mouse_leave} className="project-title" style={anim}>{p.project.display_name}</animated.a>
                 <div className="project-text">{p.project.description}</div>
             </div>
         </div>

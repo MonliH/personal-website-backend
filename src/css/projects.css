@@ -12,6 +12,8 @@
 
 .project-title {
     font: bold 20px "Montserrat", sans-serif;
+    color: #15A1FF;
+    text-decoration: underline;
 }
 
 .project-text {
