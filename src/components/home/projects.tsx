@@ -231,7 +231,7 @@ const ProjectGrid = (p: ProjectGridProps) => {
     const anims = useSpring(spring_options);
 
     return (
-        <animated.div id="project-grid" style={anims}>
+        <animated.div id="project-grid" style={{display: "block", ...anims}}>
             {fragment}
         </animated.div>
     );
@@ -245,6 +245,7 @@ const Projects = () => {
 
     return (
         <div id="projects" ref={ref}>
+            <div className="title" id="projects-title">My Projects</div>
             <ProjectGrid items={items} visible={visible}></ProjectGrid>
         </div>
     )

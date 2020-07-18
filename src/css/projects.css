@@ -43,6 +43,10 @@
     margin-right: 4px;
 }
 
+#projects-title {
+    margin-bottom: 50px;
+}
+
 #project-grid {
     width: 70vw;
     position: relative;
@@ -50,7 +54,9 @@
 
 #projects {
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
     height: fit-content;
 }
 
