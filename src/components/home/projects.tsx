@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect, useEffect } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import { useTransition, animated, useSpring } from "react-spring";
 
 import { useInView } from "react-intersection-observer";
@@ -255,7 +255,7 @@ const ProjectGrid = (p: ProjectGridProps) => {
 }
 
 const Projects = () => {
-    const [items, set_items] = useState(project_list);
+    const [items] = useState(project_list);
     const [ref, visible] = useInView({
         triggerOnce: true
     });
