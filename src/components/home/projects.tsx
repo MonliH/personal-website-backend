@@ -101,7 +101,14 @@ const project_list: Array<Project> = [
         tags: [Tag.Typescript, Tag.React],
         description: "you're looking at it right now",
     },
-
+    
+    {
+        display_name: "neutron-lang",
+        rank: 8,
+        link: "https://github.com/the-neutron-foundation/neutron-language",
+        tags: [Tag.Python],
+        description: "an interpreted programming language",
+    },
 ];
 
 function useWindowSize() {
