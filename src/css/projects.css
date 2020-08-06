@@ -54,11 +54,17 @@
     position: relative;
 }
 
-#projects {
+#projects-page {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     height: fit-content;
+}
+
+#projects {
+    padding-top: 20vh;
+    margin-top: -20vh;
+    margin-bottom: 20vh;
 }
 

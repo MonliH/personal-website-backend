@@ -198,21 +198,24 @@ const ProjectGrid = (p: ProjectGridProps) => {
     let counter_col = 0;
     let counter_row = 0;
     let grid_items: Array<ProjectPosition> = p.items.map((child, i) => {
-        const col = counter_col;
-        const row = counter_row;
-
         counter_col++;
 
-        if ((i % columns === columns-1)) {
-            counter_row++;
+        if (i % columns === 0) {
+            if (i !== 0) {
+                // New row
+                counter_row++;
+            }
+            // Reset column
             counter_col = 0;
         }
 
         return {
-            xy: [(cardw + cardwm) * col, row * (cardh + cardhm)],
+            xy: [(cardw + cardwm) * counter_col, counter_row * (cardh + cardhm)],
             project: child
         };
     });
+
+    counter_row += 1;
 
     const transitions = useTransition(grid_items, {
         from: () => ({ xy: [0, 0], width: cardw, height: cardh, opacity: 0 }),
@@ -237,12 +240,12 @@ const ProjectGrid = (p: ProjectGridProps) => {
 
     let spring_options: { from: undefined | object, to: object } = {
         from: undefined,
-        to: {height: (counter_row + 1) * (cardh + cardhm), width: columns * (cardw + cardwm)}
+        to: {height: counter_row * (cardh + cardhm), width: columns * (cardw + cardwm)}
     };
 
     if (first_anim) {
         set_first_anim(false);
-        spring_options.from = {height: (counter_row + 1) * (cardh + cardhm),  width: columns * (cardw + cardwm)};
+        spring_options.from = {height: counter_row * (cardh + cardhm),  width: columns * (cardw + cardwm)};
     }
 
     const anims = useSpring(spring_options);
@@ -261,9 +264,11 @@ const Projects = () => {
     });
 
     return (
-        <div id="projects" ref={ref}>
+        <div id="projects-page">
             <div className="title" id="projects-title">My Projects</div>
-            <ProjectGrid items={items} visible={visible}></ProjectGrid>
+            <div ref={ref}>
+                <ProjectGrid items={items} visible={visible}></ProjectGrid>
+            </div>
         </div>
     )
 }
