@@ -124,6 +124,33 @@ function useWindowSize() {
     return size;
 }
 
+interface ProjectCardLinkProps {
+    project_link: string,
+    project_name: string
+}
+
+const ProjectCardLink = (p: ProjectCardLinkProps) => {
+    let [anim, set_link] = useSpring(() => ({ textDecorationColor: "rgba(0, 0, 0, 0)" }));
+
+    const on_mouse_enter = () => {
+        set_link({textDecorationColor: "rgba(21, 161, 255, 255)"});
+    };
+
+    const on_mouse_leave = () => {
+        set_link({textDecorationColor: "rgba(0, 0, 0, 0)"});
+    };
+    return <animated.a 
+                href={p.project_link}
+                target="_blank"
+                onMouseEnter={on_mouse_enter}
+                onMouseLeave={on_mouse_leave}
+                className="project-title"
+                style={anim}
+        >
+            {p.project_name}
+        </animated.a>;
+}
+
 interface ProjectCardProps {
     project: Project,
     cardw: number,
@@ -142,27 +169,32 @@ const ProjectCard = (p: ProjectCardProps) => {
         ));
     }
 
-    let [anim, set] = useSpring(() => ({ textDecorationColor: "rgba(0, 0, 0, 0)" }));
+    let [anim, set_shadow] = useSpring(() => ({ boxShadow: "0px 0px 0px #00000000" }));
 
     const on_mouse_enter = () => {
-        set({textDecorationColor: "rgba(21, 161, 255, 255)"});
+        set_shadow({boxShadow: "2px 2px 4px #00000030"});
     };
 
     const on_mouse_leave = () => {
-        set({textDecorationColor: "rgba(0, 0, 0, 0)"});
+        set_shadow({boxShadow: "0px 0px 0px #00000000"});
     };
 
     return (
-        <div className="project-card" style={{ width: p.cardw, height: p.cardh }}>
+        <animated.div 
+            className="project-card"
+            style={{ width: p.cardw, height: p.cardh, ...anim }}
+            onMouseEnter={on_mouse_enter}
+            onMouseLeave={on_mouse_leave}
+        >
             <div className="project-tags">
                 {tags}
             </div>
 
             <div className="project-texts">
-                <animated.a href={p.project.link} target="_blank" onMouseEnter={on_mouse_enter} onMouseLeave={on_mouse_leave} className="project-title" style={anim}>{p.project.display_name}</animated.a>
+                <ProjectCardLink project_name={p.project.display_name} project_link={p.project.link}></ProjectCardLink>
                 <div className="project-text">{p.project.description}</div>
             </div>
-        </div>
+        </animated.div>
     );
 }
 
