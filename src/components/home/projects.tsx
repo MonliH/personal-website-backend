@@ -145,7 +145,7 @@ const ProjectCardLink = (p: ProjectCardLinkProps) => {
                 onMouseEnter={on_mouse_enter}
                 onMouseLeave={on_mouse_leave}
                 className="project-title"
-                style={anim}
+                style={anim as any} // XXX: Make sure to fix this after [this](https://github.com/react-spring/react-spring/issues/1102) is fixed
         >
             {p.project_name}
         </animated.a>;
@@ -172,17 +172,17 @@ const ProjectCard = (p: ProjectCardProps) => {
     let [anim, set_shadow] = useSpring(() => ({ boxShadow: "0px 0px 0px #00000000" }));
 
     const on_mouse_enter = () => {
-        set_shadow({boxShadow: "2px 2px 4px #00000030"});
+        set_shadow({ boxShadow: "2px 2px 4px #00000030" });
     };
 
     const on_mouse_leave = () => {
-        set_shadow({boxShadow: "0px 0px 0px #00000000"});
+        set_shadow({ boxShadow: "0px 0px 0px #00000000" });
     };
 
     return (
         <animated.div 
             className="project-card"
-            style={{ width: p.cardw, height: p.cardh, ...anim }}
+            style={{ width: p.cardw, height: p.cardh, ...anim as any }} // XXX: Make sure to fix this after [this](https://github.com/react-spring/react-spring/issues/1102) is fixed
             onMouseEnter={on_mouse_enter}
             onMouseLeave={on_mouse_leave}
         >
