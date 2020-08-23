@@ -133,11 +133,11 @@ const ProjectCardLink = (p: ProjectCardLinkProps) => {
     let [anim, set_link] = useSpring(() => ({ textDecorationColor: "rgba(0, 0, 0, 0)" }));
 
     const on_mouse_enter = () => {
-        set_link({textDecorationColor: "rgba(21, 161, 255, 255)"});
+        set_link({ textDecorationColor: "rgba(21, 161, 255, 255)" });
     };
 
     const on_mouse_leave = () => {
-        set_link({textDecorationColor: "rgba(0, 0, 0, 0)"});
+        set_link({ textDecorationColor: "rgba(0, 0, 0, 0)" });
     };
     return <animated.a 
                 href={p.project_link}
