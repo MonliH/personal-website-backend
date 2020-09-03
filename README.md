@@ -1,4 +1,4 @@
 # personal-website
 
-My personal website. Soon to be live at [monolith.vision](https://monolith.vision)!
+My personal website. Live at [monolith.vision](https://monolith.vision).
 
