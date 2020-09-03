@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 const Contact = () => {
-    let [status, set_status] = useState("");
     return (
         <div className="wrapper-center">
             <div className="wrapper-inner">
@@ -27,10 +26,6 @@ const Contact = () => {
                     </label>
                     <div id="contact-button-label">
                         <button type="submit" id="send-button">Send</button>
-                        <div className="entry-text" style={{
-                            marginLeft: "20px",
-                            marginTop: "7px"
-                        }}>{status}</div>
                     </div>
                 </form>
             </div>
