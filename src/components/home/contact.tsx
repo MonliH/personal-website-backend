@@ -7,7 +7,7 @@ const Contact = () => {
                 <pre className="title">Contact Me</pre>
                 <form 
                     id="contact-form"
-                    method="POST"
+                    method="pos"
                     name="contact"
                     data-netlify="true"
                 >
