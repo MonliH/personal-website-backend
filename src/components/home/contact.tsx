@@ -8,12 +8,12 @@ const Contact = () => {
                 <form 
                     id="contact-form"
                     method="POST"
-                    data-netlify="true"
+                    name="contact"
                 >
                     <div id="entry-container">
                         <label className="entry">
                             <div className="entry-text">Your Email:</div>
-                            <input type="text" name="_replyto" id="email" className="entry-input" placeholder="Email" required/>
+                            <input type="email" name="email" id="email" className="entry-input" placeholder="Email" required/>
                         </label>
                         <label className="entry">
                             <div className="entry-text">Your Name:</div>
@@ -26,6 +26,10 @@ const Contact = () => {
                     </label>
                     <div id="contact-button-label">
                         <button type="submit" id="send-button">Send</button>
+                        <div className="entry-text" style={{
+                            marginLeft: "20px",
+                            marginTop: "7px"
+                        }}>{status}</div>
                     </div>
                 </form>
             </div>
@@ -34,4 +38,3 @@ const Contact = () => {
 };
 
 export default Contact;
-
