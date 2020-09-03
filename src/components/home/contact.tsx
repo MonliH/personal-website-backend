@@ -9,6 +9,7 @@ const Contact = () => {
                     id="contact-form"
                     method="POST"
                     name="contact"
+                    data-netlify="true"
                 >
                     <div id="entry-container">
                         <label className="entry">
