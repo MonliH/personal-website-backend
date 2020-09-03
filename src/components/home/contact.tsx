@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 
-import * as Form from "../../helpers/form"
-
 const Contact = () => {
     let [status, set_status] = useState("");
     return (
@@ -10,7 +8,8 @@ const Contact = () => {
                 <pre className="title">Contact Me</pre>
                 <form 
                     id="contact-form"
-                    onSubmit={e => Form.submit(e, set_status)}
+                    method="POST"
+                    data-netlify="true"
                 >
                     <div id="entry-container">
                         <label className="entry">
