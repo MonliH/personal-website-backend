@@ -1,36 +1,31 @@
-const encode = (data: Array<[string, string]>) => {
-  return data.map(
-      ([key, value]) =>
-        encodeURIComponent(key) +
-        "=" +
-        encodeURIComponent(value)
-    )
-    .join("&");
+import React from "react";
+
+const capitalize = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
-export const submit = (
-  e: React.FormEvent<HTMLFormElement>,
-  set_status: (value: string) => void
-) => {
-  let target: any = e.target as any;
-  let body = encode(
-      [
-        ["form-name", "contact"],
-        ["email", target.email.value],
-        ["name", target.name.value],
-        ["message", target.message.value],
-      ]
-    );
-  
-  console.log(body);
+export const submit = (e: React.FormEvent<HTMLFormElement>, set_status: (value: string) => void) => {
+    e.preventDefault();
+    let target: any = e.target as any;
+    
+    const requestOptions = {
+        method: "POST",
+        headers: {  "Accept": "application/json", "Content-Type": "application/json" },
+        body: JSON.stringify({ _replyto: target._replyto.value, name: target.name.value, message: target.message.value })
+    };
 
-  fetch("https://monolith.vision", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body,
-  })
-    .then(() => set_status("Success!"))
-    .catch((error) => set_status(`${error}`.split(":")[1]));
-
-  e.preventDefault();
+    fetch("https://formspree.io/xbjzleev", requestOptions)
+        .then(response => response.json())
+        .then(data => {
+            let data_any = data as any;
+            if (data_any.error) {
+                if (data_any.error.includes("_replyto")) {
+                    set_status("Please enter a valid email.");
+                } else {
+                    set_status(capitalize(data_any.error));
+                }
+            } else {
+                set_status("Message sent successfully!")
+            }
+        });
 };
