@@ -1,10 +1,9 @@
-const encode = (data: Map<string, string>) => {
-  return Object.keys(data)
-    .map(
-      (key) =>
+const encode = (data: Array<[string, string]>) => {
+  return data.map(
+      ([key, value]) =>
         encodeURIComponent(key) +
         "=" +
-        encodeURIComponent(data.get(key) as string)
+        encodeURIComponent(value)
     )
     .join("&");
 };
@@ -14,18 +13,21 @@ export const submit = (
   set_status: (value: string) => void
 ) => {
   let target: any = e.target as any;
-
-  fetch("/", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: encode(
-      new Map([
+  let body = encode(
+      [
         ["form-name", "contact"],
         ["email", target.email.value],
         ["name", target.name.value],
         ["message", target.message.value],
-      ])
-    ),
+      ]
+    );
+
+  console.log(body);
+
+  fetch("/", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
   })
     .then(() => set_status("Success!"))
     .catch((error) => set_status(error));
