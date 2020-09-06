@@ -22,15 +22,13 @@ export const submit = (
       ]
     );
 
-  console.log(body);
-
-  fetch("/", {
+  fetch("https://monolith.vision", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body,
   })
     .then(() => set_status("Success!"))
-    .catch((error) => set_status(error));
+    .catch((error) => set_status(`${error}`.split(":")[1]));
 
   e.preventDefault();
 };
