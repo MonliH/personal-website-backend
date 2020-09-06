@@ -15,7 +15,7 @@ const Contact = () => {
                     <div id="entry-container">
                         <label className="entry">
                             <div className="entry-text">Your Email:</div>
-                            <input type="text" name="_replyto" id="email" className="entry-input" placeholder="Email" required/>
+                            <input type="email" name="_replyto" id="email" className="entry-input" placeholder="Email" required/>
                         </label>
                         <label className="entry">
                             <div className="entry-text">Your Name:</div>
