@@ -130,30 +130,26 @@ interface ProjectCardLinkProps {
 }
 
 const ProjectCardLink = (p: ProjectCardLinkProps) => {
-  let [anim, set_link] = useSpring(() => ({
-    textDecorationColor: "rgba(0, 0, 0, 0)",
-  }));
+    let [anim, set_link] = useSpring(() => ({ textDecorationColor: "rgba(0, 0, 0, 0)" }));
 
-  const on_mouse_enter = () => {
-    set_link({ textDecorationColor: "rgba(21, 161, 255, 255)" });
-  };
+    const on_mouse_enter = () => {
+        set_link({textDecorationColor: "rgba(21, 161, 255, 255)"});
+    };
 
-  const on_mouse_leave = () => {
-    set_link({ textDecorationColor: "rgba(0, 0, 0, 0)" });
-  };
-  return (
-    <animated.a
-      href={p.project_link}
-      target="_blank"
-      onMouseEnter={on_mouse_enter}
-      onMouseLeave={on_mouse_leave}
-      className="project-title"
-      style={anim as any} // XXX: Make sure to fix this after [this](https://github.com/react-spring/react-spring/issues/1102) is fixed
-    >
-      {p.project_name}
-    </animated.a>
-  );
-};
+    const on_mouse_leave = () => {
+        set_link({textDecorationColor: "rgba(0, 0, 0, 0)"});
+    };
+    return <animated.a 
+                href={p.project_link}
+                target="_blank"
+                onMouseEnter={on_mouse_enter}
+                onMouseLeave={on_mouse_leave}
+                className="project-title"
+                style={anim as any} // XXX: Make sure to fix this after [this](https://github.com/react-spring/react-spring/issues/1102) is fixed
+        >
+            {p.project_name}
+        </animated.a>;
+}
 
 interface ProjectCardProps {
   project: Project;

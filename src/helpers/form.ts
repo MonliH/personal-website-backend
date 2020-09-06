@@ -21,6 +21,8 @@ export const submit = (
         ["message", target.message.value],
       ]
     );
+  
+  console.log(body);
 
   fetch("https://monolith.vision", {
     method: "POST",
