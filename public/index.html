@@ -3,38 +3,68 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="%PUBLIC_URL%/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="%PUBLIC_URL%/favicon-16x16.png">
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="%PUBLIC_URL%/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="%PUBLIC_URL%/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="%PUBLIC_URL%/favicon-16x16.png"
+    />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Jonathan Li's website and blog"
-    />
+    <meta name="description" content="Jonathan Li's website and blog" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Jonathan Li</title>
 
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-167223778-1"></script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-167223778-1"
+    ></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'UA-167223778-1');
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "UA-167223778-1");
     </script>
   </head>
-  <body style="background-color: #1D1D1D;">
+  <body style="background-color: #1d1d1d">
     <noscript>
-      <div style="display: flex; justify-content: center; align-items: center; height: 90vh; background-color: #1D1D1D;">
-        <div style="font-size: 20px; color: white;">
-          You need to <b>enable javascript</b> for this page to function, thanks!
+      <div
+        style="
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 90vh;
+          background-color: #1d1d1d;
+        "
+      >
+        <div style="font-size: 20px; color: white">
+          You need to <b>enable javascript</b> for this page to function,
+          thanks!
         </div>
       </div>
     </noscript>
 
-
-    <form method="post" name="contact" netlify netlify-honeypot="bot-field" hidden>
+    <form
+      method="post"
+      name="contact"
+      netlify
+      netlify-honeypot="bot-field"
+      hidden
+    >
       <input type="email" name="email" />
       <input type="text" name="name" />
       <textarea name="message"></textarea>

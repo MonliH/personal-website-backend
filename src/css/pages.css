@@ -1,70 +1,82 @@
 .page {
-    background-color: #1D1D1D;
-    padding-top: 100px;
-    margin-top: -100px;
+  background-color: #1d1d1d;
+  padding-top: 100px;
+  margin-top: -100px;
 }
 
 #front-page {
-    display: flex;
-    flex-direction: row;
-    background: #262626;
+  display: flex;
+  flex-direction: row;
+  background: #262626;
 }
 
 #title-page {
-    top: 0;
-    left: 0;
-    height: 70vh;
-    width: 100vw;
-    padding: 0;
+  top: 0;
+  left: 0;
+  height: 70vh;
+  width: 100vw;
+  padding: 0;
 }
 
 #title-image {
-    position: relative;
-    height: 70vh;
-    width: 70vh;
-    float: right;
-    margin-right: 15vw;
-    margin-top: 120px;
-    filter: saturate(105%);
-    transition: 0.8s;
-    transform: translateY(0);
-    z-index: 10;
-    margin-left: -100px;
-} 
+  position: relative;
+  height: 70vh;
+  width: 70vh;
+  float: right;
+  margin-right: 15vw;
+  margin-top: 120px;
+  filter: saturate(105%);
+  transition: 0.8s;
+  transform: translateY(0);
+  z-index: 10;
+  margin-left: -100px;
+}
 
 #bridge {
-    position: relative;
-    height: 30vh;
-    display: block;
-    background: rgb(38, 38, 38);
-    background: -moz-linear-gradient(180deg, rgba(38, 38, 38, 1) 0%, rgba(29, 29, 29, 1) 100%);
-    background: -webkit-linear-gradient(180deg, rgba(38, 38, 38, 1) 0%, rgba(29, 29, 29, 1) 100%);
-    background: linear-gradient(180deg, rgba(38, 38, 38, 1) 0%, rgba(29, 29, 29, 1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#262626", endColorstr="#1d1d1d", GradientType=1);
+  position: relative;
+  height: 30vh;
+  display: block;
+  background: rgb(38, 38, 38);
+  background: -moz-linear-gradient(
+    180deg,
+    rgba(38, 38, 38, 1) 0%,
+    rgba(29, 29, 29, 1) 100%
+  );
+  background: -webkit-linear-gradient(
+    180deg,
+    rgba(38, 38, 38, 1) 0%,
+    rgba(29, 29, 29, 1) 100%
+  );
+  background: linear-gradient(
+    180deg,
+    rgba(38, 38, 38, 1) 0%,
+    rgba(29, 29, 29, 1) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#262626", endColorstr="#1d1d1d", GradientType=1);
 }
 
 #about {
-    padding-top: 20vh;
-    margin-top: -24vh;
-    margin-bottom: 10vh;
+  padding-top: 20vh;
+  margin-top: -24vh;
+  margin-bottom: 10vh;
 }
 
 #about-vid {
-    height: 50vh;
-    width: 50vh;
-    filter: brightness(1.1) contrast(105%) saturate(135%);
+  height: 50vh;
+  width: 50vh;
+  filter: brightness(1.1) contrast(105%) saturate(135%);
 }
 
 #contact-form {
-    width: fit-content;
-    display: flex;
-    flex-direction: column;
-    width: 500px;
-    font: "Montserrat", sans-serif;
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  font: "Montserrat", sans-serif;
 }
 
 #contact {
-    height: 100vh;
+  height: 100vh;
 }
 
 .entry {
@@ -83,7 +95,7 @@
 
 .entry-input {
   height: 45px;
-  background-color: #1D1D1D;
+  background-color: #1d1d1d;
   background-color: rgba(0, 0, 0, 0);
   border: 1px solid;
   color: white;
@@ -106,7 +118,7 @@
   height: 40px;
   border: 2px solid;
   color: white;
-  background-color: #1D1D1D;
+  background-color: #1d1d1d;
   background-color: rgba(0, 0, 0, 0);
   border-radius: 2px;
   backface-visibility: hidden;
@@ -124,7 +136,7 @@
 
 #message-textarea {
   height: 250px;
-  background-color: #1D1D1D;
+  background-color: #1d1d1d;
   background-color: rgba(0, 0, 0, 0);
   border: 1px solid;
   color: white;
@@ -133,8 +145,7 @@
 }
 
 #contact-button-label {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
-

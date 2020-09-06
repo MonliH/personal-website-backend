@@ -4,13 +4,13 @@
 }
 
 html {
-  background-color: #1D1D1D;
+  background-color: #1d1d1d;
   height: 100%;
   overflow-x: hidden;
 }
 
 body {
-  background-color: #1D1D1D;
+  background-color: #1d1d1d;
   overflow: auto;
   overflow-x: hidden;
   margin: 0;
@@ -19,10 +19,9 @@ body {
   color: white;
 }
 
-video  {
+video {
   display: block;
-   -moz-user-select: none;
-   -webkit-user-select: none;
-   user-select:none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
-
