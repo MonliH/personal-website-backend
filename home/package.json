@@ -5,14 +5,10 @@
   "dependencies": {
     "@types/jest": "^24.0.0",
     "@types/node": "^12.12.54",
-    "@types/react-router-dom": "^5.1.5",
-    "@types/react-router-hash-link": "^1.2.1",
     "intersection-observer": "^0.11.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-intersection-observer": "^8.26.2",
-    "react-router-dom": "^5.2.0",
-    "react-router-hash-link": "^2.0.0",
     "react-scripts": "^3.4.3",
     "react-spring": "9.0.0-rc.3",
     "typescript": "~3.7.2"
