@@ -1,7 +1,7 @@
 build_frontend:
-	cd home && \
+	cd www && \
 	npm i && \
-	npm build
+	npm run build
 
 build_backend:
 	cd server && \
