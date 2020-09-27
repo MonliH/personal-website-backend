@@ -59,11 +59,11 @@ const BlogSummary = ({ blog_entry }: { blog_entry: BlogEntry }) => {
   );
 };
 
-const BlogHome = ({blog_entries}: {blog_entries: Array<BlogEntry>}) => {
+const BlogHome = ({ blog_entries }: { blog_entries: Array<BlogEntry> }) => {
   const blog_previews = (
     <div>
       {blog_entries.map((blog_entry: BlogEntry, idx: number) => {
-        return <BlogSummary blog_entry={blog_entry} key={idx}/>;
+        return <BlogSummary blog_entry={blog_entry} key={idx} />;
       })}
     </div>
   );
