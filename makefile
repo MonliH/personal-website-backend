@@ -1,6 +1,9 @@
+install:
+	cd www && \
+	npm i
+
 build_frontend:
 	cd www && \
-	npm i && \
 	npm run build
 
 build_backend:
