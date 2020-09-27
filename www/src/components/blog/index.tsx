@@ -42,7 +42,7 @@ const Blog = () => {
         <BlogHome blog_entries={blog_entries} />
       </Route>
       <Route path="*">
-        <BlogPage blog_entries={blog_entries} />
+        <BlogPage />
       </Route>
     </Switch>
   );

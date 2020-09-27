@@ -4,3 +4,5 @@ export interface BlogEntry {
   readonly date: Date;
   readonly contents: string;
 }
+
+export const BLOG_COLOR_BG = "#FAFAFA";

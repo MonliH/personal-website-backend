@@ -5,6 +5,7 @@ import { useInView } from "react-intersection-observer";
 import styled from "styled-components";
 
 import { Tag, project_list, Project } from "../../data/projects";
+import AnimatedLink from "../styled_link";
 
 import { Title } from "../title";
 
@@ -40,43 +41,6 @@ function useWindowSize() {
   }, []);
   return size;
 }
-
-interface ProjectCardLinkProps {
-  project_link: string;
-  project_name: string;
-}
-
-const ProjectTitle = styled(animated.a)`
-  font: bold 20px "Montserrat", sans-serif;
-  color: #15a1ff;
-  text-decoration: underline;
-`;
-
-const ProjectCardLink = (p: ProjectCardLinkProps) => {
-  let [anim, set_link] = useSpring(() => ({
-    textDecorationColor: "rgba(0, 0, 0, 0)",
-  }));
-
-  const on_mouse_enter = () => {
-    set_link({ textDecorationColor: "rgba(21, 161, 255, 255)" });
-  };
-
-  const on_mouse_leave = () => {
-    set_link({ textDecorationColor: "rgba(0, 0, 0, 0)" });
-  };
-  return (
-    <ProjectTitle
-      href={p.project_link}
-      target="_blank"
-      onMouseEnter={on_mouse_enter}
-      onMouseLeave={on_mouse_leave}
-      // XXX: Make sure to fix this after [this](https://github.com/react-spring/react-spring/issues/1102) is fixed
-      style={anim as any}
-    >
-      {p.project_name}
-    </ProjectTitle>
-  );
-};
 
 interface ProjectCardProps {
   project: Project;
@@ -158,10 +122,11 @@ const ProjectCard = (p: ProjectCardProps) => {
     >
       <div>
         <ProjectTags>{tags}</ProjectTags>
-        <ProjectCardLink
-          project_name={p.project.display_name}
-          project_link={p.project.link}
-        ></ProjectCardLink>
+        <AnimatedLink
+          text={p.project.display_name}
+          link={p.project.link}
+          extern
+        ></AnimatedLink>
         <ProjectText>{p.project.description}</ProjectText>
       </div>
     </ProjectCardStyled>

@@ -4,7 +4,7 @@ contents: |
     I love writing
     <a href="https://www.rust-lang.org/" rel="noopener noreferrer" target="_blank">
       Rust
-    </a> code. Recently, I've gotten interested in using Rust for web development, via
+    </a>code. Recently, I've gained interest in using Rust for web development, via
     web assembly (WASM). It turns out setting up WASM with React and
     TypeScript is harder than it looks&mdash;that's why I'm writing this post.
   </div>

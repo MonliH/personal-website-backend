@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { shared_title } from "../title";
-import { BlogEntry } from "../../data/blog";
+import { BlogEntry, BLOG_COLOR_BG } from "../../data/blog";
+import AnimatedLink from "../styled_link";
+
+import BlogHeader from "./blog_header";
 
 const BlogHomeWrapper = styled.div`
-  background-color: #ebeaed;
+  background-color: ${BLOG_COLOR_BG};
+  min-height: 100vh;
 `;
 
 const BlogTitleWrapper = styled.div`
@@ -27,17 +31,15 @@ export const Title = styled.pre`
 
 const ContentPreview = styled.div`
   max-height: 100px;
-  width: 600px;
+  width: 700px;
   overflow: hidden;
+  color: #191919;
+  mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
 `;
 
 const BlogSummaryStyled = styled.div`
   padding-top: 15px;
   padding-bottom: 15px;
-  border-top: solid;
-  border-width: 1px;
-  border-color: #262626;
-  width: 700px;
   font: 15px Lato, sans-serif;
   display: flex;
   flex-direction: column;
@@ -45,16 +47,50 @@ const BlogSummaryStyled = styled.div`
   align-items: center;
 `;
 
-const BlogTitle = styled(Link)`
-  font: 25px Montserrat, sans-serif;
-  margin-bottom: 15px;
+const BlogSummaryInner = styled.div``;
+const BlogMainInner = styled.div`
+  padding-top: 60px;
 `;
+
+const BlogHeaderWrapper = styled.div`
+  margin-bottom: 30px;
+`;
+
+const BlogTitle = styled(AnimatedLink)`
+  font: 600 25px "IBM Plex Mono", monospace;
+  margin-bottom: 10px;
+  width: 600px;
+`;
+
+const StyledBlogTime = styled.div`
+  color: black;
+  margin-bottom: 20px;
+`;
+
+const BlogTime = ({ date }: { date: Date }) => {
+  return <StyledBlogTime>{date.toLocaleDateString("en-US")}</StyledBlogTime>;
+};
 
 const BlogSummary = ({ blog_entry }: { blog_entry: BlogEntry }) => {
   return (
     <BlogSummaryStyled>
-      <BlogTitle to={`blog/${blog_entry.url}`}>{blog_entry.title}</BlogTitle>
-      <ContentPreview>{blog_entry.contents}</ContentPreview>
+      <BlogSummaryInner>
+        <BlogTitle
+          link={`/blog/${blog_entry.url}`}
+          text={blog_entry.title}
+          style={{
+            marginBottom: "10px",
+            width: "600px",
+            fontWeight: 600,
+            fontSize: "27px",
+            fontFamily: '"IBM Plex Mono", monospace',
+          }}
+        />
+        <BlogTime date={blog_entry.date}></BlogTime>
+        <ContentPreview
+          dangerouslySetInnerHTML={{ __html: blog_entry.contents }}
+        ></ContentPreview>
+      </BlogSummaryInner>
     </BlogSummaryStyled>
   );
 };
@@ -68,11 +104,19 @@ const BlogHome = ({ blog_entries }: { blog_entries: Array<BlogEntry> }) => {
     </div>
   );
 
+  useEffect(() => {
+    document.title = "Jonathan Li's blog";
+  });
+
   return (
     <BlogHomeWrapper>
       <BlogTitleWrapper>
-        <Title>Jonathan Li's Blog</Title>
-        {blog_previews}
+        <BlogMainInner>
+          <BlogHeaderWrapper>
+            <BlogHeader/>
+          </BlogHeaderWrapper>
+          {blog_previews}
+        </BlogMainInner>
       </BlogTitleWrapper>
     </BlogHomeWrapper>
   );
