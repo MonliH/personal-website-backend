@@ -6,6 +6,7 @@ use actix_files::{Files, NamedFile};
 
 use std::io;
 use std::fs::{File, read_dir};
+use std::collections::HashMap;
 
 use serde::{Serialize, Deserialize};
 use chrono::NaiveDate;
@@ -44,6 +45,14 @@ lazy_static! {
             .collect()
     };
 
+    static ref BLOGS_YAML_MAP: HashMap<String, String> = {
+        BLOGS.0
+            .iter()
+            .zip(BLOGS_YAML.iter())
+            .map(|(post, yaml)| (post.url.clone(), yaml.clone()))
+            .collect()
+    };
+
     static ref LENGTH: String = {
         BLOGS.0.len().to_string()
     };
@@ -59,7 +68,7 @@ async fn blog_entries(web::Path((starting, ending)): web::Path<(usize, usize)>) 
         .content_type("application/x-yaml")
         .body(if ending > BLOGS_YAML.len() {
             // Out of range
-            return HttpResponse::BadRequest().body("specified range out of range");
+            return HttpResponse::RangeNotSatisfiable().body("specified range out of range");
         } else {
             BLOGS_YAML[starting..ending].join("\n...\n")
         })
@@ -72,10 +81,23 @@ async fn blog_post_amounts(_req: HttpRequest) -> HttpResponse {
         .body(LENGTH.clone())
 }
 
+#[get("/api/blog/entry/{name}")]
+async fn blog_post_by_name(web::Path(name): web::Path<String>) -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type("application/x-yaml")
+        .body(match BLOGS_YAML_MAP.get(&name) {
+            Some(post) => post,
+            None => {
+                return HttpResponse::NotFound().body("post not found");
+            }
+        })
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
+            .service(blog_post_by_name)
             .service(blog_post_amounts)
             .service(blog_entries)
             .service(

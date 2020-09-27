@@ -69,13 +69,12 @@ const BlogHome = () => {
 
   const fetch_entries = async () => {
     const blog_pages_num = parseInt(await(await fetch("/api/blog/pages")).text());
-    console.log(blog_pages_num);
     const page_start = posts_per_page*page_no;
     const possible_end = page_start + posts_per_page;
     const entries_res = 
       await fetch(`/api/blog/entries/${page_start}/${possible_end > blog_pages_num? blog_pages_num : possible_end}`);
     const entries: Array<BlogEntry> = yaml.loadAll(await entries_res.text());
-    console.log(entries);
+    set_blog_entries(entries);
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

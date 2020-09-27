@@ -1,7 +1,6 @@
 import React from "react";
 import { Switch, Route, useRouteMatch } from "react-router-dom";
 
-import NoMatch from "../404";
 import BlogHome from "./blog_home";
 import BlogPage from "./blog_page";
 
@@ -14,7 +13,7 @@ const Blog = () => {
         <BlogHome/>
       </Route>
       <Route path="*">
-        <NoMatch />
+        <BlogPage />
       </Route>
     </Switch>
   );
