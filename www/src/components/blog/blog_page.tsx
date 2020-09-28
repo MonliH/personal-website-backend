@@ -17,9 +17,10 @@ const BlogPageWrapper = styled.div`
 `;
 
 export const BlogTitle = styled.div`
-  font: 700 37px Montserrat, sans-serif;
+  font: 700 37px "IBM Plex Mono", monospace;
   color: #000000;
   margin-bottom: 35px;
+  margin-top: 35px;
   width: 800px;
 
   @media (max-width: 850px) {
@@ -57,7 +58,7 @@ const SubBlogPage = ({ blog }: { blog: BlogEntry }) => {
 
 const BlogPage = () => {
   const { pathname } = useLocation();
-  const [blog_404, set_blog_404] = useState(false);
+  const [blog_404, set_blog_404] = useState<null | string>(null);
   const [blog, set_blog] = useState<BlogEntry | null>(null);
 
   const get_blog = async () => {
@@ -65,12 +66,12 @@ const BlogPage = () => {
     fetch(`/api/blog/entry/${end_blog_path}`)
       .then((res) => {
         if (!res.ok) {
-          throw new Error();
+          return Promise.reject(new Error("cannot find specified blog page"));
         }
         return res.text();
       })
       .then((text) => set_blog(yaml.load(text)))
-      .catch(() => set_blog_404(true));
+      .catch((why: Error) => {set_blog_404(why.message);});
   };
   useEffect(() => {
     get_blog();
@@ -83,14 +84,14 @@ const BlogPage = () => {
   }, [blog]);
 
   return blog_404 ? (
-    <NoMatch />
-  ) : blog ? (
+    <NoMatch msg={blog_404}/>
+  ) : (blog ? (
     <BlogPageWrapper>
       <SubBlogPage blog={blog} />
     </BlogPageWrapper>
   ) : (
     <div />
-  );
+  ));
 };
 
 export default BlogPage;
