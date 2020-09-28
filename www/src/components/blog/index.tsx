@@ -4,9 +4,7 @@ import { Switch, Route, useRouteMatch } from "react-router-dom";
 import BlogHome from "./blog_home";
 import BlogPage from "./blog_page";
 
-import { BlogEntry } from "../../data/blog";
-
-import yaml from "js-yaml";
+import { BlogEntry, into_blog_entry } from "../../data/blog";
 
 const Blog = () => {
   const { path } = useRouteMatch();
@@ -27,7 +25,7 @@ const Blog = () => {
         possible_end > blog_pages_num ? blog_pages_num : possible_end
       }`
     );
-    const entries: Array<BlogEntry> = yaml.loadAll(await entries_res.text());
+    const entries: Array<BlogEntry> = JSON.parse(await entries_res.text()).map((entry: any) => into_blog_entry(entry));
     set_blog_entries(entries);
   };
 

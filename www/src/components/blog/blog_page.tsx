@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-import { BlogEntry, BLOG_COLOR_BG } from "../../data/blog";
+import { BlogEntry, BLOG_COLOR_BG, into_blog_entry } from "../../data/blog";
 import BlogHeader from "./blog_header";
 import NoMatch from "../404";
 
 import styled from "styled-components";
-import yaml from "js-yaml";
 
 const BlogPageWrapper = styled.div`
   background-color: ${BLOG_COLOR_BG};
@@ -70,7 +69,7 @@ const BlogPage = () => {
         }
         return res.text();
       })
-      .then((text) => set_blog(yaml.load(text)))
+      .then((text) => set_blog(into_blog_entry(JSON.parse(text))))
       .catch((why: Error) => {set_blog_404(why.message);});
   };
   useEffect(() => {

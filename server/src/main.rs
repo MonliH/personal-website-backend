@@ -35,21 +35,21 @@ lazy_static! {
         Blogs(blogs)
     };
 
-    static ref BLOGS_YAML: Vec<String> = {
+    static ref BLOGS_JSON: Vec<String> = {
         BLOGS.0
             .iter()
             .map(|post|
-                serde_yaml::to_string(post)
-                .expect("Error encoding yaml")
+                serde_json::to_string(post)
+                .expect("Error encoding json")
             )
             .collect()
     };
 
-    static ref BLOGS_YAML_MAP: HashMap<String, String> = {
+    static ref BLOGS_JSON_MAP: HashMap<String, String> = {
         BLOGS.0
             .iter()
-            .zip(BLOGS_YAML.iter())
-            .map(|(post, yaml)| (post.url.clone(), yaml.clone()))
+            .zip(BLOGS_JSON.iter())
+            .map(|(post, json)| (post.url.clone(), json.clone()))
             .collect()
     };
 
@@ -65,12 +65,12 @@ async fn home(_req: HttpRequest) -> io::Result<NamedFile> {
 #[get("/api/blog/entries/{starting}/{ending}")]
 async fn blog_entries(web::Path((starting, ending)): web::Path<(usize, usize)>) -> HttpResponse {
     HttpResponse::Ok()
-        .content_type("application/x-yaml")
-        .body(if ending > BLOGS_YAML.len() {
+        .content_type("application/json")
+        .body(if ending > BLOGS_JSON.len() {
             // Out of range
             return HttpResponse::RangeNotSatisfiable().body("specified range out of range");
         } else {
-            BLOGS_YAML[starting..ending].join("\n...\n")
+            format!("[{}]", BLOGS_JSON[starting..ending].join(","))
         })
 }
 
@@ -84,8 +84,8 @@ async fn blog_post_amounts(_req: HttpRequest) -> HttpResponse {
 #[get("/api/blog/entry/{name}")]
 async fn blog_post_by_name(web::Path(name): web::Path<String>) -> HttpResponse {
     HttpResponse::Ok()
-        .content_type("application/x-yaml")
-        .body(match BLOGS_YAML_MAP.get(&name) {
+        .content_type("application/json")
+        .body(match BLOGS_JSON_MAP.get(&name) {
             Some(post) => post,
             None => {
                 return HttpResponse::NotFound().body("post not found");
