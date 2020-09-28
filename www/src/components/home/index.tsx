@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "../header";
 
 import { NameTitleWrapper } from "../wrapper";
@@ -91,6 +91,10 @@ const Bridge = styled.div`
 `;
 
 const Home = () => {
+  useEffect(() => {
+    document.body.style.backgroundColor = "#1D1D1D";
+  }, []);
+
   const mappings: Array<[string, React.FunctionComponent]> = [
     ["about", About],
     ["projects", Projects],

@@ -87,6 +87,10 @@ const ProjectCardStyled = styled(animated.div)`
   padding: 25px;
 `;
 
+const AnimatedProjectLink = styled(AnimatedLink)`
+  color: #15a1ff;
+`;
+
 const ProjectCard = (p: ProjectCardProps) => {
   let tags = new Array(p.project.tags.length);
 
@@ -122,11 +126,11 @@ const ProjectCard = (p: ProjectCardProps) => {
     >
       <div>
         <ProjectTags>{tags}</ProjectTags>
-        <AnimatedLink
+        <AnimatedProjectLink
           text={p.project.display_name}
           link={p.project.link}
           extern
-        ></AnimatedLink>
+        />
         <ProjectText>{p.project.description}</ProjectText>
       </div>
     </ProjectCardStyled>

@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React from "react";
 import { animated, useSpring } from "react-spring";
 
 import CSS from "csstype";
@@ -12,6 +12,7 @@ interface AnimatedLinkProps {
   text: string;
   extern?: boolean;
   style?: CSS.Properties;
+  className?: string;
 }
 
 const StyledAnimatedLink = styled(animated.a)`
@@ -48,6 +49,7 @@ const AnimatedLink = (p: AnimatedLinkProps) => {
       onMouseLeave={on_mouse_leave}
       // XXX: Make sure to fix this after [this](https://github.com/react-spring/react-spring/issues/1102) is fixed
       style={{ ...(anim as any), ...(p.style ? p.style : {}) }}
+      className={p.className}
     >
       {p.text}
     </StyledAnimatedLink>
@@ -57,6 +59,7 @@ const AnimatedLink = (p: AnimatedLinkProps) => {
       style={{ ...(anim as any), ...(p.style ? p.style : {}) }}
       onMouseEnter={on_mouse_enter}
       onMouseLeave={on_mouse_leave}
+      className={p.className}
     >
       {p.text}
     </AnimatedLinkRouter>

@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Switch, Route, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import { BlogEntry, BLOG_COLOR_BG } from "../../data/blog";
 import BlogHeader from "./blog_header";
 import NoMatch from "../404";
-
-import AnimatedLink from "../styled_link";
 
 import styled from "styled-components";
 import yaml from "js-yaml";
@@ -23,17 +21,28 @@ export const BlogTitle = styled.div`
   color: #000000;
   margin-bottom: 35px;
   width: 800px;
+
+  @media (max-width: 850px) {
+    width: 90vw;
+  }
 `;
 
 const BlogText = styled.div`
   font: 19px Lato, sans-serif;
   color: #191919;
   width: 750px;
+  @media (max-width: 850px) {
+    width: 85vw;
+  }
 `;
 
 const BlogContentWrapper = styled.div`
   margin-left: -20vw;
   margin-top: 100px;
+  @media (max-width: 1225px) {
+    margin-left: 0;
+    padding-left: 20px;
+  }
 `;
 
 const SubBlogPage = ({ blog }: { blog: BlogEntry }) => {

@@ -36,6 +36,10 @@ const Blog = () => {
     fetch_entries();
   }, [page_no]);
 
+  useEffect(() => {
+    document.body.style.backgroundColor = "#FFFFFF";
+  }, []);
+
   return (
     <Switch>
       <Route exact path={`${path}/`}>

@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { shared_title } from "../title";
@@ -35,6 +34,12 @@ const ContentPreview = styled.div`
   overflow: hidden;
   color: #191919;
   mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+
+  @media (max-width: 825px) {
+    width: 95vw;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
 `;
 
 const BlogSummaryStyled = styled.div`
@@ -54,12 +59,26 @@ const BlogMainInner = styled.div`
 
 const BlogHeaderWrapper = styled.div`
   margin-bottom: 30px;
+  @media (max-width: 825px) {
+    margin-left: 10px;
+  }
 `;
 
 const BlogTitle = styled(AnimatedLink)`
   font: 600 25px "IBM Plex Mono", monospace;
-  margin-bottom: 10px;
+  padding-bottom: 100px;
   width: 600px;
+
+  @media (max-width: 825px) {
+    width: 95vw;
+  }
+`;
+
+const BlogPreviewTitleWrapper = styled.div`
+  @media (max-width: 825px) {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
 `;
 
 const StyledBlogTime = styled.div`
@@ -75,18 +94,10 @@ const BlogSummary = ({ blog_entry }: { blog_entry: BlogEntry }) => {
   return (
     <BlogSummaryStyled>
       <BlogSummaryInner>
-        <BlogTitle
-          link={`/blog/${blog_entry.url}`}
-          text={blog_entry.title}
-          style={{
-            marginBottom: "10px",
-            width: "600px",
-            fontWeight: 600,
-            fontSize: "27px",
-            fontFamily: '"IBM Plex Mono", monospace',
-          }}
-        />
-        <BlogTime date={blog_entry.date}></BlogTime>
+        <BlogPreviewTitleWrapper>
+          <BlogTitle link={`/blog/${blog_entry.url}`} text={blog_entry.title} />
+          <BlogTime date={blog_entry.date}></BlogTime>
+        </BlogPreviewTitleWrapper>
         <ContentPreview
           dangerouslySetInnerHTML={{ __html: blog_entry.contents }}
         ></ContentPreview>
@@ -113,7 +124,7 @@ const BlogHome = ({ blog_entries }: { blog_entries: Array<BlogEntry> }) => {
       <BlogTitleWrapper>
         <BlogMainInner>
           <BlogHeaderWrapper>
-            <BlogHeader/>
+            <BlogHeader />
           </BlogHeaderWrapper>
           {blog_previews}
         </BlogMainInner>
