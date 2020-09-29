@@ -23,7 +23,7 @@ struct Blogs(Vec<Blog>);
 
 lazy_static! {
     static ref BLOGS: Blogs = {
-        let mut blogs = read_dir("assets/blog/entries/")
+        let mut blogs = read_dir("assets/blog/__processed_entries")
             .unwrap()
             .map(|entry_path|
                 serde_yaml::from_reader(

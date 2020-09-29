@@ -1,1 +1,3 @@
 server_target/
+assets/blog/__processed_entries
+node_modules

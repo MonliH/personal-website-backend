@@ -1,6 +1,7 @@
 {
   "name": "personal-website-react",
   "version": "0.1.0",
+  "author": "Jonathan Li",
   "private": true,
   "dependencies": {
     "@types/jest": "^24.0.0",
