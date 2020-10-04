@@ -28,7 +28,7 @@ export const BlogTitle = styled.div`
 `;
 
 const BlogText = styled.div`
-  font: 19px Lato, sans-serif;
+  font: 16px Lato, sans-serif;
   color: #191919;
   width: 750px;
   @media (max-width: 850px) {
@@ -48,7 +48,7 @@ const BlogContentWrapper = styled.div`
 const SubBlogPage = ({ blog }: { blog: BlogEntry }) => {
   return (
     <BlogContentWrapper>
-      <BlogHeader />
+      <BlogHeader blog />
       <BlogTitle>{blog.title}</BlogTitle>
       <BlogText dangerouslySetInnerHTML={{ __html: blog.contents }}></BlogText>
     </BlogContentWrapper>
@@ -72,6 +72,7 @@ const BlogPage = () => {
       .then((text) => set_blog(into_blog_entry(JSON.parse(text))))
       .catch((why: Error) => {set_blog_404(why.message);});
   };
+
   useEffect(() => {
     get_blog();
   }, []);

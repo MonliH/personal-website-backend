@@ -23,12 +23,34 @@ body {
   color: white;
 }
 
+h1 {
+  font: 600 26px "IBM Plex Mono", monospace;
+}
+
+h1::before {
+  content: "+";
+  color: #BDBDBD;
+  font-size: 18px;
+  margin-right: 8px;
+}
+
+h2 {
+  font: 600 22px "IBM Plex Mono", monospace;
+}
+
+h2::before {
+  content: "-";
+  color: #BDBDBD;
+  font-size: 14px;
+  margin-right: 8px;
+}
+
 /* Syntax highlight */
 *[class^="language-"] {
   display: block;
   border-radius: 3px;
   overflow-x: auto;
-  padding: 1em;
+  padding: 0.75em;
   color: #abb3bf;
   background: #282c34;
 }

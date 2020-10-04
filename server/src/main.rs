@@ -1,61 +1,56 @@
 #[macro_use]
 extern crate lazy_static;
 
-use actix_web::{get, web, App, HttpServer, HttpRequest, HttpResponse};
+mod blog;
+mod db;
+
+use blog::BlogPost;
+use db::DB;
+
 use actix_files::{Files, NamedFile};
+use actix_web::{get, web, App, HttpRequest, HttpResponse, HttpServer};
 
-use std::io;
-use std::fs::{File, read_dir};
 use std::collections::HashMap;
+use std::fs::{read_dir, File};
+use std::io;
 
-use serde::{Serialize, Deserialize};
 use chrono::NaiveDate;
+use dotenv::dotenv;
 
-#[derive(Serialize, Deserialize)]
-struct Blog {
-    title: String,
-    contents: String,
-    date: NaiveDate,
-    url: String,
-}
-
-struct Blogs(Vec<Blog>);
+struct Blogs(Vec<BlogPost>);
 
 lazy_static! {
     static ref BLOGS: Blogs = {
         let mut blogs = read_dir("assets/blog/__processed_entries")
             .unwrap()
-            .map(|entry_path|
+            .map(|entry_path| {
                 serde_yaml::from_reader(
-                    File::open(entry_path.unwrap().path()).expect("File does not exist\nWas it deleted?")
-                ).expect("File was not valid yaml"))
-            .collect::<Vec<Blog>>();
+                    File::open(entry_path.unwrap().path())
+                        .expect("File does not exist\nWas it deleted?"),
+                )
+                .expect("File was not valid yaml")
+            })
+            .collect::<Vec<BlogPost>>();
         blogs.sort_unstable_by_key(|blog| blog.date);
 
         Blogs(blogs)
     };
-
     static ref BLOGS_JSON: Vec<String> = {
-        BLOGS.0
+        BLOGS
+            .0
             .iter()
-            .map(|post|
-                serde_json::to_string(post)
-                .expect("Error encoding json")
-            )
+            .map(|post| serde_json::to_string(post).expect("Error encoding json"))
             .collect()
     };
-
     static ref BLOGS_JSON_MAP: HashMap<String, String> = {
-        BLOGS.0
+        BLOGS
+            .0
             .iter()
             .zip(BLOGS_JSON.iter())
             .map(|(post, json)| (post.url.clone(), json.clone()))
             .collect()
     };
-
-    static ref LENGTH: String = {
-        BLOGS.0.len().to_string()
-    };
+    static ref LENGTH: String = { BLOGS.0.len().to_string() };
 }
 
 async fn home(_req: HttpRequest) -> io::Result<NamedFile> {
@@ -95,18 +90,41 @@ async fn blog_post_by_name(web::Path(name): web::Path<String>) -> HttpResponse {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| {
+    std::env::set_var("RUST_LOG", "actix_web=debug");
+    dotenv().ok();
+
+    let mut db = DB::new().await.expect("Failed to get DB handle");
+
+    println!("{:?}", db.get_recent_blogs(3, 7).await);
+
+    // for i in 1..10 {
+    //     db.upsert_blog(&BlogPost::new(
+    //         "Setting up a wasm".to_string(),
+    //         "<p>hi</p>".to_string(),
+    //         NaiveDate::from_ymd(2020, 09, i),
+    //         format!("wasm-react-ts-{}", i),
+    //     ))
+    //     .await
+    //     .expect("failed to insert blog");
+    // }
+
+    // println!("{:?}", db.get_blog("wasm-react-ts").await);
+
+    let server = HttpServer::new(|| {
         App::new()
             .service(blog_post_by_name)
             .service(blog_post_amounts)
             .service(blog_entries)
             .service(
                 Files::new("/*", "www/build/")
-                .index_file("www/build/index.html")
-                .default_handler(web::route().to(home))
+                    .index_file("www/build/index.html")
+                    .default_handler(web::route().to(home)),
             )
     })
     .bind("127.0.0.1:8080")?
-        .run()
-        .await
+    .run();
+
+    println!("Server running");
+
+    server.await
 }
