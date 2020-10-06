@@ -2,11 +2,12 @@ use crate::blog::BlogPost;
 
 use std::env;
 use std::error::Error;
+use std::convert::TryInto;
 
 use mongodb::bson;
 use mongodb::bson::doc;
 use mongodb::{
-    options::{ClientOptions, FindOptions, UpdateModifications, UpdateOptions},
+    options::{ClientOptions, UpdateModifications, UpdateOptions},
     Client, Database,
 };
 
@@ -31,7 +32,12 @@ impl DB {
         })
     }
 
-    pub async fn upsert_blog(&mut self, blog: &BlogPost) -> Result<(), Box<dyn Error>> {
+    pub async fn get_blog_nums(&self) -> Result<usize, Box<dyn Error>> {
+        let blog_collection = self.blog_db.collection("blog_pages");
+        Ok(blog_collection.count_documents(None, None).await?.try_into()?)
+    }
+
+    pub async fn upsert_blog(&self, blog: &BlogPost) -> Result<(), Box<dyn Error>> {
         let blog_collection = self.blog_db.collection("blog_pages");
         blog_collection
             .update_one(
@@ -43,7 +49,7 @@ impl DB {
         Ok(())
     }
 
-    pub async fn get_blog<'a>(&mut self, blog_url: &'a str) -> Result<BlogPost, Box<dyn Error>> {
+    pub async fn get_blog<'a>(&self, blog_url: &'a str) -> Result<BlogPost, Box<dyn Error>> {
         let blog_collection = self.blog_db.collection("blog_pages");
         let blog: BlogPost = bson::from_document(
             blog_collection
@@ -56,16 +62,21 @@ impl DB {
     }
 
     pub async fn get_recent_blogs<'a>(
-        &mut self,
+        &self,
         start: u32,
         end: u32,
     ) -> Result<Vec<BlogPost>, Box<dyn Error>> {
         let blog_collection = self.blog_db.collection("blog_pages");
         let blog: Vec<BlogPost> = blog_collection
-            .find(
-                doc! {
-                },
-                Some(FindOptions::builder().sort(doc! { "date": 1 }).build()),
+            .aggregate(
+                vec![doc! {
+                    "$sort": { "date": -1 }
+                }, doc! {
+                    "$limit": start + end,
+                }, doc! {
+                    "$skip": start
+                }],
+                None
             )
             .await?
             .map(|document| {

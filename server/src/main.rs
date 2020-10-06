@@ -1,71 +1,38 @@
-#[macro_use]
-extern crate lazy_static;
-
 mod blog;
 mod db;
 
-use blog::BlogPost;
 use db::DB;
 
 use actix_files::{Files, NamedFile};
 use actix_web::{get, web, App, HttpRequest, HttpResponse, HttpServer};
 
-use std::collections::HashMap;
-use std::fs::{read_dir, File};
-use std::io;
+use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 
-use chrono::NaiveDate;
+use std::io;
+use std::sync::Arc;
+
 use dotenv::dotenv;
 
-struct Blogs(Vec<BlogPost>);
-
-lazy_static! {
-    static ref BLOGS: Blogs = {
-        let mut blogs = read_dir("assets/blog/__processed_entries")
-            .unwrap()
-            .map(|entry_path| {
-                serde_yaml::from_reader(
-                    File::open(entry_path.unwrap().path())
-                        .expect("File does not exist\nWas it deleted?"),
-                )
-                .expect("File was not valid yaml")
-            })
-            .collect::<Vec<BlogPost>>();
-        blogs.sort_unstable_by_key(|blog| blog.date);
-
-        Blogs(blogs)
-    };
-    static ref BLOGS_JSON: Vec<String> = {
-        BLOGS
-            .0
-            .iter()
-            .map(|post| serde_json::to_string(post).expect("Error encoding json"))
-            .collect()
-    };
-    static ref BLOGS_JSON_MAP: HashMap<String, String> = {
-        BLOGS
-            .0
-            .iter()
-            .zip(BLOGS_JSON.iter())
-            .map(|(post, json)| (post.url.clone(), json.clone()))
-            .collect()
-    };
-    static ref LENGTH: String = { BLOGS.0.len().to_string() };
-}
+#[derive(Clone)]
+struct DBState(Arc<DB>);
 
 async fn home(_req: HttpRequest) -> io::Result<NamedFile> {
     Ok(NamedFile::open("www/build/index.html")?)
 }
 
 #[get("/api/blog/entries/{starting}/{ending}")]
-async fn blog_entries(web::Path((starting, ending)): web::Path<(usize, usize)>) -> HttpResponse {
+async fn blog_entries(db: web::Data<DBState>, web::Path((starting, ending)): web::Path<(usize, usize)>) -> HttpResponse {
+    let len = match db.0.get_blog_nums().await {
+        Ok(n) => n,
+        Err(_) => return HttpResponse::NotFound().body("length not found"),
+    };
     HttpResponse::Ok()
         .content_type("application/json")
-        .body(if ending > BLOGS_JSON.len() {
+        .body(if ending > len || starting > len {
             // Out of range
             return HttpResponse::RangeNotSatisfiable().body("specified range out of range");
         } else {
-            format!("[{}]", BLOGS_JSON[starting..ending].join(","))
+            serde_json::to_string(&db.0.get_recent_blogs(starting as u32, ending as u32).await.unwrap()[starting..ending]).expect("Failed to serialize blog posts")
         })
 }
 
@@ -73,16 +40,16 @@ async fn blog_entries(web::Path((starting, ending)): web::Path<(usize, usize)>) 
 async fn blog_post_amounts(_req: HttpRequest) -> HttpResponse {
     HttpResponse::Ok()
         .content_type("text/plain")
-        .body(LENGTH.clone())
+        .body("10")
 }
 
 #[get("/api/blog/entry/{name}")]
-async fn blog_post_by_name(web::Path(name): web::Path<String>) -> HttpResponse {
+async fn blog_post_by_name(db: web::Data<DBState>, web::Path(name): web::Path<String>) -> HttpResponse {
     HttpResponse::Ok()
         .content_type("application/json")
-        .body(match BLOGS_JSON_MAP.get(&name) {
-            Some(post) => post,
-            None => {
+        .body(match db.0.get_blog(&name).await {
+            Ok(post) => serde_json::to_string(&post).expect("Failed to serialize blog"),
+            Err(_) => {
                 return HttpResponse::NotFound().body("post not found");
             }
         })
@@ -93,9 +60,9 @@ async fn main() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_web=debug");
     dotenv().ok();
 
-    let mut db = DB::new().await.expect("Failed to get DB handle");
+    let db = Arc::new(DB::new().await.expect("Failed to get DB handle"));
 
-    println!("{:?}", db.get_recent_blogs(3, 7).await);
+    println!("{:?}", db.get_recent_blogs(0, 10).await);
 
     // for i in 1..10 {
     //     db.upsert_blog(&BlogPost::new(
@@ -110,8 +77,15 @@ async fn main() -> std::io::Result<()> {
 
     // println!("{:?}", db.get_blog("wasm-react-ts").await);
 
-    let server = HttpServer::new(|| {
+    let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
+    builder
+        .set_private_key_file("key.pem", SslFiletype::PEM)
+        .unwrap();
+    builder.set_certificate_chain_file("cert.pem").unwrap();
+
+    let server = HttpServer::new(move || {
         App::new()
+            .app_data(DBState(Arc::clone(&db)))
             .service(blog_post_by_name)
             .service(blog_post_amounts)
             .service(blog_entries)
@@ -121,7 +95,7 @@ async fn main() -> std::io::Result<()> {
                     .default_handler(web::route().to(home)),
             )
     })
-    .bind("127.0.0.1:8080")?
+    .bind_openssl("127.0.0.1:8080", builder)?
     .run();
 
     println!("Server running");
