@@ -17,3 +17,4 @@ config = "0.10"
 mongodb = "1"
 tokio = { version = "0.2", features = ["stream"] }
 openssl = "0.10.30"
+env_logger = "0.7"

@@ -1,8 +1,8 @@
 use crate::blog::BlogPost;
 
+use std::convert::TryInto;
 use std::env;
 use std::error::Error;
-use std::convert::TryInto;
 
 use mongodb::bson;
 use mongodb::bson::doc;
@@ -32,9 +32,12 @@ impl DB {
         })
     }
 
-    pub async fn get_blog_nums(&self) -> Result<usize, Box<dyn Error>> {
+    pub async fn get_num_of_blogs(&self) -> Result<usize, Box<dyn Error>> {
         let blog_collection = self.blog_db.collection("blog_pages");
-        Ok(blog_collection.count_documents(None, None).await?.try_into()?)
+        Ok(blog_collection
+            .count_documents(None, None)
+            .await?
+            .try_into()?)
     }
 
     pub async fn upsert_blog(&self, blog: &BlogPost) -> Result<(), Box<dyn Error>> {
@@ -69,14 +72,18 @@ impl DB {
         let blog_collection = self.blog_db.collection("blog_pages");
         let blog: Vec<BlogPost> = blog_collection
             .aggregate(
-                vec![doc! {
-                    "$sort": { "date": -1 }
-                }, doc! {
-                    "$limit": start + end,
-                }, doc! {
-                    "$skip": start
-                }],
-                None
+                vec![
+                    doc! {
+                        "$sort": { "date": -1 }
+                    },
+                    doc! {
+                        "$limit": start + end,
+                    },
+                    doc! {
+                        "$skip": start
+                    },
+                ],
+                None,
             )
             .await?
             .map(|document| {
