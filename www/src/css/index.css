@@ -29,7 +29,7 @@ h1 {
 
 h1::before {
   content: "+";
-  color: #BDBDBD;
+  color: #bdbdbd;
   font-size: 18px;
   margin-right: 8px;
 }
@@ -40,7 +40,7 @@ h2 {
 
 h2::before {
   content: "-";
-  color: #BDBDBD;
+  color: #bdbdbd;
   font-size: 14px;
   margin-right: 8px;
 }

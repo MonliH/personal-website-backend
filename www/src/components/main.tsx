@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import Home from "./home/index";
 import Blog from "./blog/index";
+import AdminPanel from "./admin/index";
 import NoMatch from "./404";
 
 import { Globals } from "react-spring";
@@ -26,6 +27,9 @@ const Main = () => {
         </Route>
         <Route path="/blog">
           <Blog />
+        </Route>
+        <Route path="/admin">
+          <AdminPanel />
         </Route>
         <Route path="*">
           <NoMatch />

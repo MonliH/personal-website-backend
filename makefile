@@ -9,7 +9,6 @@ build_frontend:
 	npm run build
 
 build_backend:
-	node blog_processing
 	cd server && \
 	cargo build --release --target-dir ../server_target
 

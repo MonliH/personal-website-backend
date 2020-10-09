@@ -17,11 +17,11 @@ const StyledAnimatedLink = styled(AnimatedLink)`
   font: 400 19px "IBM Plex Mono", monospace;
 `;
 
-const BlogHeader = ({blog}: {blog?: boolean}) => {
+const BlogHeader = ({ blog }: { blog?: boolean }) => {
   return (
     <Header>
       <StyledAnimatedLink link="/" text="Jonathan Li" />
-      's {blog? <StyledAnimatedLink link="/blog" text="blog" /> : <>blog</>}
+      's {blog ? <StyledAnimatedLink link="/blog" text="blog" /> : <>blog</>}
     </Header>
   );
 };

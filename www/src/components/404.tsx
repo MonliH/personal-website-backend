@@ -17,14 +17,16 @@ const NoMatchText = styled.div`
 `;
 
 interface NoMatchProps {
-  msg?: string
+  msg?: string;
 }
 
 const NoMatch = (props: NoMatchProps) => {
-  return <NoMatchStyled>
-    404
-    {props.msg? <NoMatchText>{props.msg}</NoMatchText> : <></>}
-  </NoMatchStyled>;
+  return (
+    <NoMatchStyled>
+      404
+      {props.msg ? <NoMatchText>{props.msg}</NoMatchText> : <></>}
+    </NoMatchStyled>
+  );
 };
 
 export default NoMatch;

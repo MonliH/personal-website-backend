@@ -3,6 +3,7 @@ use crate::blog::BlogPost;
 use std::convert::TryInto;
 use std::env;
 use std::error::Error;
+use std::sync::Arc;
 
 use mongodb::bson;
 use mongodb::bson::doc;
@@ -12,6 +13,8 @@ use mongodb::{
 };
 
 use tokio::stream::StreamExt;
+
+pub type DBState = Arc<DB>;
 
 pub struct DB {
     client: Client,

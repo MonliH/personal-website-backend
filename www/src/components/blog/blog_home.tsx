@@ -106,10 +106,15 @@ const BlogSummary = ({ blog_entry }: { blog_entry: BlogEntry }) => {
   );
 };
 
-const BlogHome = ({ blog_entries }: { blog_entries: Array<BlogEntry> }) => {
+interface BlogHomeProps {
+  blog_entries: Array<BlogEntry>;
+  loading: boolean;
+}
+
+const BlogHome = (props: BlogHomeProps) => {
   const blog_previews = (
     <div>
-      {blog_entries.map((blog_entry: BlogEntry, idx: number) => {
+      {props.blog_entries.map((blog_entry: BlogEntry, idx: number) => {
         return <BlogSummary blog_entry={blog_entry} key={idx} />;
       })}
     </div>
@@ -126,7 +131,7 @@ const BlogHome = ({ blog_entries }: { blog_entries: Array<BlogEntry> }) => {
           <BlogHeaderWrapper>
             <BlogHeader />
           </BlogHeaderWrapper>
-          {blog_previews}
+          {props.loading ? <div>Loading...</div> : blog_previews}
         </BlogMainInner>
       </BlogTitleWrapper>
     </BlogHomeWrapper>

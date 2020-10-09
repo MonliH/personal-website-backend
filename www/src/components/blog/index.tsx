@@ -3,45 +3,30 @@ import { Switch, Route, useRouteMatch } from "react-router-dom";
 
 import BlogHome from "./blog_home";
 import BlogPage from "./blog_page";
+import BlogPageChanger from "./blog_page_changer";
 
-import { BlogEntry, into_blog_entry } from "../../data/blog";
+import useBlogEntries from "../../hooks/useBlogEntries";
+import useBg from "../../hooks/useBg";
 
 const Blog = () => {
   const { path } = useRouteMatch();
-
-  const [blog_entries, set_blog_entries] = useState<Array<BlogEntry>>([]);
-  const [page_no, set_page_no] = useState(0);
-
   const posts_per_page = 10;
 
-  const fetch_entries = async () => {
-    const blog_pages_num = parseInt(
-      await (await fetch("/api/blog/pages")).text()
-    );
-    const page_start = posts_per_page * page_no;
-    const possible_end = page_start + posts_per_page;
-    const entries_res = await fetch(
-      `/api/blog/entries/${page_start}/${
-        possible_end > blog_pages_num ? blog_pages_num : possible_end
-      }`
-    );
-    const entries: Array<BlogEntry> = JSON.parse(await entries_res.text()).map((entry: any) => into_blog_entry(entry));
-    set_blog_entries(entries);
-  };
+  const [page_no, set_page_no, blog_entries, loading] = useBlogEntries(
+    posts_per_page
+  );
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    fetch_entries();
-  }, [page_no]);
-
-  useEffect(() => {
-    document.body.style.backgroundColor = "#FFFFFF";
-  }, []);
+  useBg("#FFFFFF");
 
   return (
     <Switch>
       <Route exact path={`${path}/`}>
-        <BlogHome blog_entries={blog_entries} />
+        <BlogPageChanger
+          current_page={page_no}
+          set_page={set_page_no}
+          total_pages={Math.ceil(blog_entries.length / posts_per_page)}
+        />
+        <BlogHome blog_entries={blog_entries} loading={loading} />
       </Route>
       <Route path="*">
         <BlogPage />

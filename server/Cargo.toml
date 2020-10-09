@@ -18,3 +18,4 @@ mongodb = "1"
 tokio = { version = "0.2", features = ["stream"] }
 openssl = "0.10.30"
 env_logger = "0.7"
+actix-ratelimit = { git = "https://github.com/TerminalWitchcraft/actix-ratelimit.git" }
