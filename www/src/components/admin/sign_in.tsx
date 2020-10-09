@@ -17,11 +17,22 @@ const SignIn = () => {
 
   const [key, set_key] = useState();
   const [redirect, set_redirect] = useState(false);
+  const [wrong, set_wrong] = useState(false);
 
-  const on_submit = (e: React.FormEvent) => {
+  const on_submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    set_auth_data!(key);
-    set_redirect(true);
+
+    const request_options = {
+      method: "POST",
+      body: key
+    };
+
+    if (await fetch("/api/admin/key", request_options).then((r) => r.ok)) {
+      set_auth_data!(key);
+      set_redirect(true);
+    } else {
+      set_wrong(true);
+    }
   };
 
   return (redirect? <Redirect to="/admin/"/> : <form onSubmit={on_submit}>
@@ -30,6 +41,7 @@ const SignIn = () => {
       <input type="password" name="key" placeholder="key" onChange={e => {set_key(e.target.value)}}/>
     </Label>
     <Input type="submit" value="Submit"/>
+    {wrong? <Label>Wrong Key</Label> : <></>}
   </form>);
 };
 

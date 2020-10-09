@@ -18,15 +18,11 @@ pub async fn admin_edits(
     HttpResponse::Ok().body("hi")
 }
 
-#[derive(Deserialize)]
-pub struct AdminKey {
-    key: String
-}
 #[post("/api/admin/key")]
-pub async fn admin_key(req: web::Json<AdminKey>) -> HttpResponse {
-    if req.key == env::var("ADMIN_KEY").expect("Could not find ADMIN_KEY variable, did you forget to set it?") {
+pub async fn admin_key(req: String) -> HttpResponse {
+    if req == env::var("ADMIN_KEY").expect("Could not find ADMIN_KEY variable, did you forget to set it?") {
         return HttpResponse::Ok().body("correct key")
     } else {
-        return HttpResponse::Unauthorized().body("incorrect key")
+        return HttpResponse::Forbidden().body("incorrect key")
     }
 }
