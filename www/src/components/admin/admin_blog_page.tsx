@@ -66,6 +66,7 @@ const AdminBlogPage = () => {
           <Err msg="blog not found" />
         ) : blog && revised_blog ? (
           <div>
+            <button onSubmit={() => {}}>DELETE</button>
             <StyledLink link="/admin/" text="Admin Panel"/>
             <ChangeBlogForm onSubmit={on_form_submit}>
               <ChangeBlogLabel>Title</ChangeBlogLabel>

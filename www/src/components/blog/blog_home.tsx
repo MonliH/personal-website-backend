@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 import styled from "styled-components";
 
 import { shared_title } from "../title";
 import { BlogEntry, BLOG_COLOR_BG } from "../../data/blog";
+import BlogPageChanger, { ChangerProps } from "./blog_page_changer";
 import AnimatedLink from "../styled_link";
-
 import BlogHeader from "./blog_header";
 import Loading from "../loading";
 
@@ -118,10 +119,11 @@ const BlogSummary = ({
 
 export const BlogSummaryList = (props: {
   blog_entries: Array<BlogEntry>;
+  _ref?: (node?: Element | null | undefined) => void,
   prefix?: string;
 }) => {
   const blog_previews = (
-    <div>
+    <div ref={props._ref}>
       {props.blog_entries.map((blog_entry: BlogEntry, idx: number) => {
         return (
           <BlogSummary
@@ -137,7 +139,7 @@ export const BlogSummaryList = (props: {
   return <>{blog_previews}</>;
 };
 
-interface BlogHomeProps {
+interface BlogHomeProps extends ChangerProps {
   blog_entries: Array<BlogEntry>;
   loading: boolean;
 }
@@ -145,6 +147,10 @@ interface BlogHomeProps {
 const BlogHome = (props: BlogHomeProps) => {
   useEffect(() => {
     document.title = "Jonathan Li's blog";
+  });
+
+  const [ref, visible] = useInView({
+    threshold: 1,
   });
 
   return (
@@ -157,7 +163,26 @@ const BlogHome = (props: BlogHomeProps) => {
           {props.loading ? (
             <Loading />
           ) : (
-            <BlogSummaryList blog_entries={props.blog_entries} />
+            <>
+              <BlogPageChanger
+                current_page={props.current_page}
+                set_page={props.set_page}
+                total_pages={props.total_pages}
+              />
+              <BlogSummaryList _ref={ref} blog_entries={props.blog_entries} />
+              {
+                /* If the whole thing fits in the screen, we don't need this  */
+                visible ? (
+                  <></>
+                ) : (
+                  <BlogPageChanger
+                    current_page={props.current_page}
+                    set_page={props.set_page}
+                    total_pages={props.total_pages}
+                  />
+                )
+              }
+            </>
           )}
         </BlogMainInner>
       </BlogTitleWrapper>

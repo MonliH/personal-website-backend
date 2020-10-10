@@ -3,7 +3,6 @@ import { Switch, Route, useRouteMatch, useLocation } from "react-router-dom";
 
 import BlogHome from "./blog_home";
 import BlogPage from "./blog_page";
-import BlogPageChanger from "./blog_page_changer";
 
 import useBlogEntries from "../../hooks/useBlogEntries";
 import useBg from "../../hooks/useBg";
@@ -23,15 +22,16 @@ const Blog = () => {
   return (
     <Switch>
       <Route exact path={`${path}/`}>
-        <BlogPageChanger
+        <BlogHome
           current_page={page_no}
           set_page={set_page_no}
           total_pages={pages}
+          blog_entries={blog_entries}
+          loading={loading}
         />
-        <BlogHome blog_entries={blog_entries} loading={loading} />
       </Route>
       <Route path="*">
-        <BlogPage blog_url={location.split("/").pop() as string}/>
+        <BlogPage blog_url={location.split("/").pop() as string} />
       </Route>
     </Switch>
   );

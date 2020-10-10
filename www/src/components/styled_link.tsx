@@ -19,12 +19,14 @@ const StyledAnimatedLink = styled(animated.a)`
   font: bold 20px "Montserrat", sans-serif;
   color: #15a1ff;
   text-decoration: underline;
+  text-decoration-color: rgba(21, 161, 255, 0);
 `;
 
 const StyledLinkRouter = styled(Link)`
   font: bold 20px "Montserrat", sans-serif;
   color: #15a1ff;
   text-decoration: underline;
+  text-decoration-color: rgba(21, 161, 255, 0);
 `;
 const AnimatedLinkRouter = animated(StyledLinkRouter);
 
@@ -38,7 +40,7 @@ const AnimatedLink = (p: AnimatedLinkProps) => {
   };
 
   const on_mouse_leave = () => {
-    set_link({ textDecorationColor: "rgba(0, 0, 0, 0)" });
+    set_link({ textDecorationColor: "rgba(21, 161, 255, 0)" });
   };
 
   return p.extern ? (

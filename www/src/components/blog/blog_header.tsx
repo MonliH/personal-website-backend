@@ -6,7 +6,8 @@ import AnimatedLink from "../styled_link";
 
 const Header = styled.div`
   color: black;
-  font: 400 19px "IBM Plex Mono", monospace;
+  font: 400 45px "IBM Plex Mono", monospace;
+  width: 700px;
 
   @media (max-width: 825px) {
     width: 95vw;
@@ -14,7 +15,7 @@ const Header = styled.div`
 `;
 
 const StyledAnimatedLink = styled(AnimatedLink)`
-  font: 400 19px "IBM Plex Mono", monospace;
+  font: inherit;
 `;
 
 const BlogHeader = ({ blog }: { blog?: boolean }) => {
