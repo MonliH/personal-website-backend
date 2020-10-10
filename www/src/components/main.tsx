@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Home from "./home/index";
 import Blog from "./blog/index";
 import AdminPanel from "./admin/index";
-import NoMatch from "./404";
+import Err from "./error";
 
 import { Globals } from "react-spring";
 
@@ -32,7 +32,7 @@ const Main = () => {
           <AdminPanel />
         </Route>
         <Route path="*">
-          <NoMatch />
+          <Err />
         </Route>
       </Switch>
     </Router>

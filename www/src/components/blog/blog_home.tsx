@@ -6,6 +6,7 @@ import { BlogEntry, BLOG_COLOR_BG } from "../../data/blog";
 import AnimatedLink from "../styled_link";
 
 import BlogHeader from "./blog_header";
+import Loading from "../loading";
 
 const BlogHomeWrapper = styled.div`
   background-color: ${BLOG_COLOR_BG};
@@ -90,20 +91,50 @@ const BlogTime = ({ date }: { date: Date }) => {
   return <StyledBlogTime>{date.toLocaleDateString("en-US")}</StyledBlogTime>;
 };
 
-const BlogSummary = ({ blog_entry }: { blog_entry: BlogEntry }) => {
+const BlogSummary = ({
+  blog_entry,
+  prefix,
+}: {
+  blog_entry: BlogEntry;
+  prefix?: string;
+}) => {
   return (
     <BlogSummaryStyled>
       <BlogSummaryInner>
         <BlogPreviewTitleWrapper>
-          <BlogTitle link={`/blog/${blog_entry.url}`} text={blog_entry.title} />
+          <BlogTitle
+            link={`${prefix ? prefix : "/"}blog/${blog_entry.url}`}
+            text={blog_entry.title}
+          />
           <BlogTime date={blog_entry.date}></BlogTime>
         </BlogPreviewTitleWrapper>
         <ContentPreview
-          dangerouslySetInnerHTML={{ __html: blog_entry.contents }}
+          dangerouslySetInnerHTML={{ __html: blog_entry.html_contents }}
         ></ContentPreview>
       </BlogSummaryInner>
     </BlogSummaryStyled>
   );
+};
+
+export const BlogSummaryList = (props: {
+  blog_entries: Array<BlogEntry>;
+  prefix?: string;
+}) => {
+  const blog_previews = (
+    <div>
+      {props.blog_entries.map((blog_entry: BlogEntry, idx: number) => {
+        return (
+          <BlogSummary
+            blog_entry={blog_entry}
+            key={idx}
+            prefix={props.prefix}
+          />
+        );
+      })}
+    </div>
+  );
+
+  return <>{blog_previews}</>;
 };
 
 interface BlogHomeProps {
@@ -112,14 +143,6 @@ interface BlogHomeProps {
 }
 
 const BlogHome = (props: BlogHomeProps) => {
-  const blog_previews = (
-    <div>
-      {props.blog_entries.map((blog_entry: BlogEntry, idx: number) => {
-        return <BlogSummary blog_entry={blog_entry} key={idx} />;
-      })}
-    </div>
-  );
-
   useEffect(() => {
     document.title = "Jonathan Li's blog";
   });
@@ -131,7 +154,11 @@ const BlogHome = (props: BlogHomeProps) => {
           <BlogHeaderWrapper>
             <BlogHeader />
           </BlogHeaderWrapper>
-          {props.loading ? <div>Loading...</div> : blog_previews}
+          {props.loading ? (
+            <Loading />
+          ) : (
+            <BlogSummaryList blog_entries={props.blog_entries} />
+          )}
         </BlogMainInner>
       </BlogTitleWrapper>
     </BlogHomeWrapper>

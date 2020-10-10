@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 
+import useBg from "../hooks/useBg";
+
 const NoMatchStyled = styled.div`
   display: flex;
   justify-content: center;
@@ -18,12 +20,14 @@ const NoMatchText = styled.div`
 
 interface NoMatchProps {
   msg?: string;
+  code?: number;
 }
 
 const NoMatch = (props: NoMatchProps) => {
+  useBg("#FFFFFF");
   return (
     <NoMatchStyled>
-      404
+      {props.code ? props.code : "404"}
       {props.msg ? <NoMatchText>{props.msg}</NoMatchText> : <></>}
     </NoMatchStyled>
   );

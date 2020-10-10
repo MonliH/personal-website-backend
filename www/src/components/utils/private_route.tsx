@@ -1,24 +1,28 @@
-import React, { useContext } from 'react';
-import { Route, RouteProps, Redirect, useRouteMatch } from 'react-router-dom';
-import { auth_context } from '../../contexts/auth_context';
+import React, { useContext } from "react";
+import { Route, RouteProps, Redirect } from "react-router-dom";
+import { auth_context } from "../../contexts/auth_context";
+import validate_key from "../../helpers/validate_key";
 
-interface PrivateRouteProps {
-    component: JSX.Element,
-    rest?: RouteProps,
+import Loading from "../loading";
+
+interface PrivateRouteProps extends RouteProps {
+  c: JSX.Element;
 }
 
-const PrivateRoute = ({ component, ...rest }: PrivateRouteProps) => {
+const PrivateRoute = ({ c, ...rest }: PrivateRouteProps) => {
   const { auth } = useContext(auth_context);
-  const { path } = useRouteMatch();
+
+  if (!auth || auth.loading) {
+    return <Route {...rest} render={() => <Loading />} />;
+  }
 
   return (
     <Route
       {...rest}
-      render={() => (
-        auth ? component : <Redirect to={`${path}sign-in`} />
-      )}
+      render={() =>
+        auth.key && validate_key(auth.key) ? c : <Redirect to={`/admin/sign-in`} />
+      }
     />
-
   );
 };
 

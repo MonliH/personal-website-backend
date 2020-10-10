@@ -17,7 +17,7 @@ const BlogPageChanger = (props: ChangerProps) => {
             }}
             key={i}
           >
-            {i}
+            {i + 1}
           </button>
         );
       })}

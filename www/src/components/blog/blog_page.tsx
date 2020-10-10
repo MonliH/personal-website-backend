@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import styled from "styled-components";
 
 import { BlogEntry, BLOG_COLOR_BG } from "../../data/blog";
 import BlogHeader from "./blog_header";
-import NoMatch from "../404";
-import useBlogPost from "../../hooks/useBlogPost";
+import Err from "../error";
+import Loading from "../loading";
 
-import styled from "styled-components";
+import useBlogPost from "../../hooks/useBlogPost";
 
 const BlogPageWrapper = styled.div`
   background-color: ${BLOG_COLOR_BG};
@@ -46,19 +46,26 @@ const BlogContentWrapper = styled.div`
   }
 `;
 
-const SubBlogPage = ({ blog }: { blog: BlogEntry }) => {
+const SubBlogPage = ({ blog }: { blog: null | BlogEntry }) => {
   return (
     <BlogContentWrapper>
       <BlogHeader blog />
-      <BlogTitle>{blog.title}</BlogTitle>
-      <BlogText dangerouslySetInnerHTML={{ __html: blog.contents }}></BlogText>
+      {blog ? (
+        <>
+          <BlogTitle>{blog.title}</BlogTitle>
+          <BlogText
+            dangerouslySetInnerHTML={{ __html: blog.html_contents }}
+          ></BlogText>
+        </>
+      ) : (
+        <Loading />
+      )}
     </BlogContentWrapper>
   );
 };
 
-const BlogPage = () => {
-  const { pathname } = useLocation();
-  const [blog, blog_404] = useBlogPost(pathname.split("/").pop() as string);
+const BlogPage = ({blog_url}: {blog_url: string}) => {
+  const [blog, blog_404] = useBlogPost(blog_url);
 
   useEffect(() => {
     document.title = `Jonathan's blog${
@@ -67,13 +74,11 @@ const BlogPage = () => {
   }, [blog]);
 
   return blog_404 ? (
-    <NoMatch msg={blog_404} />
-  ) : blog ? (
+    <Err msg={blog_404} />
+  ) : (
     <BlogPageWrapper>
       <SubBlogPage blog={blog} />
     </BlogPageWrapper>
-  ) : (
-    <div>Loading...</div>
   );
 };
 

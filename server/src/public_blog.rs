@@ -11,6 +11,12 @@ pub async fn blog_entries(
         Ok(n) => n,
         Err(_) => return HttpResponse::NotFound().body("length not found"),
     };
+
+    // Edge case
+    if starting == 0 && ending == 0 {
+        return HttpResponse::Ok().body("[]");
+    }
+
     HttpResponse::Ok()
         .content_type("application/json")
         .body(if ending > len || starting > len {

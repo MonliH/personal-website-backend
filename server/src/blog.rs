@@ -5,16 +5,24 @@ use serde::{Deserialize, Serialize};
 /// Blog post data struct
 pub struct BlogPost {
     pub title: String,
-    pub contents: String,
+    pub html_contents: String,
+    pub md_contents: String,
     pub date: NaiveDate,
     pub url: String,
 }
 
 impl BlogPost {
-    pub fn new(title: String, contents: String, date: NaiveDate, url: String) -> Self {
+    pub fn new(
+        title: String,
+        html_contents: String,
+        md_contents: String,
+        date: NaiveDate,
+        url: String,
+    ) -> Self {
         Self {
             title,
-            contents,
+            html_contents,
+            md_contents,
             date,
             url,
         }

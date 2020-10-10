@@ -3,16 +3,18 @@ import { BlogEntry, into_blog_entry } from "../data/blog";
 
 const useBlogEntries = (
   posts_per_page: number
-): [number, (no: number) => void, Array<BlogEntry>, boolean] => {
+): [number, number, (no: number) => void, Array<BlogEntry>, boolean] => {
   const [blog_entries, set_blog_entries] = useState<Array<BlogEntry>>([]);
   const [page_no, set_page_no] = useState(0);
   const [loading, set_loading] = useState(true);
+  const [pages, set_pages] = useState(0);
 
   const fetch_entries = async () => {
     set_loading(true);
     const blog_pages_num = parseInt(
       await (await fetch("/api/blog/pages")).text()
     );
+    set_pages(Math.ceil(blog_pages_num / posts_per_page));
     const page_start = posts_per_page * page_no;
     const possible_end = page_start + posts_per_page;
     const entries_res = await fetch(
@@ -30,9 +32,9 @@ const useBlogEntries = (
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetch_entries();
-  }, [page_no]);
+  }, [page_no, posts_per_page]);
 
-  return [page_no, set_page_no, blog_entries, loading];
+  return [pages, page_no, set_page_no, blog_entries, loading];
 };
 
 export default useBlogEntries;

@@ -2,7 +2,8 @@ export interface BlogEntry {
   readonly title: string;
   readonly url: string;
   readonly date: Date;
-  readonly contents: string;
+  readonly html_contents: string;
+  readonly md_contents: string;
 }
 
 export const BLOG_COLOR_BG = "#FAFAFA";
