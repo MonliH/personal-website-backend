@@ -64,7 +64,7 @@ const SubBlogPage = ({ blog }: { blog: null | BlogEntry }) => {
   );
 };
 
-const BlogPage = ({blog_url}: {blog_url: string}) => {
+const BlogPage = ({ blog_url }: { blog_url: string }) => {
   const [blog, blog_404] = useBlogPost(blog_url);
 
   useEffect(() => {

@@ -21,7 +21,7 @@ const BlogPageButton = styled(animated.button)`
 const BlogPageChange = ({
   i,
   set_page,
-  bold
+  bold,
 }: {
   i: number;
   set_page: (n: number) => void;
@@ -46,7 +46,7 @@ const BlogPageChange = ({
       }}
       onMouseEnter={on_mouse_enter}
       onMouseLeave={on_mouse_leave}
-      style={{ ...(anim as any), fontWeight: (bold ? "700": "400") }}
+      style={{ ...(anim as any), fontWeight: bold ? "700" : "400" }}
     >
       {i + 1}
     </BlogPageButton>
@@ -68,8 +68,15 @@ const BlogPageChanger = (props: ChangerProps) => {
   return (
     <BlogChangerDiv>
       <PageText>Page</PageText>
-      {[...Array(props.total_pages).keys()].map((i: number) => { 
-        return <BlogPageChange key={i} i={i} set_page={props.set_page} bold={props.current_page === i}/>;
+      {[...Array(props.total_pages).keys()].map((i: number) => {
+        return (
+          <BlogPageChange
+            key={i}
+            i={i}
+            set_page={props.set_page}
+            bold={props.current_page === i}
+          />
+        );
       })}
     </BlogChangerDiv>
   );

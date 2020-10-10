@@ -67,7 +67,7 @@ const AdminBlogPage = () => {
         ) : blog && revised_blog ? (
           <div>
             <button onSubmit={() => {}}>DELETE</button>
-            <StyledLink link="/admin/" text="Admin Panel"/>
+            <StyledLink link="/admin/" text="Admin Panel" />
             <ChangeBlogForm onSubmit={on_form_submit}>
               <ChangeBlogLabel>Title</ChangeBlogLabel>
               <input

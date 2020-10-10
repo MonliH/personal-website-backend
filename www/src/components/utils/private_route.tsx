@@ -20,7 +20,11 @@ const PrivateRoute = ({ c, ...rest }: PrivateRouteProps) => {
     <Route
       {...rest}
       render={() =>
-        auth.key && validate_key(auth.key) ? c : <Redirect to={`/admin/sign-in`} />
+        auth.key && validate_key(auth.key) ? (
+          c
+        ) : (
+          <Redirect to={`/admin/sign-in`} />
+        )
       }
     />
   );

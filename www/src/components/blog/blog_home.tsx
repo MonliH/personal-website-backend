@@ -119,7 +119,7 @@ const BlogSummary = ({
 
 export const BlogSummaryList = (props: {
   blog_entries: Array<BlogEntry>;
-  _ref?: (node?: Element | null | undefined) => void,
+  _ref?: (node?: Element | null | undefined) => void;
   prefix?: string;
 }) => {
   const blog_previews = (

@@ -10,13 +10,15 @@ interface AuthContext {
   set_auth_data?: (v?: string) => void;
 }
 
-export const auth_context = createContext<AuthContext>({auth: {loading: true}});
+export const auth_context = createContext<AuthContext>({
+  auth: { loading: true },
+});
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [auth, set_auth] = useState<Auth>({loading: true});
+  const [auth, set_auth] = useState<Auth>({ loading: true });
 
   const set_auth_data = (key?: string) => {
-    set_auth({loading: false, key});
+    set_auth({ loading: false, key });
   };
 
   useEffect(() => {
@@ -24,7 +26,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (key) {
       set_auth_data(key);
     } else {
-      set_auth({loading: false, key: auth.key});
+      set_auth({ loading: false, key: auth.key });
     }
   }, []);
 
