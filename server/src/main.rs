@@ -17,6 +17,7 @@ use env_logger::Env;
 use std::io;
 use std::sync::Arc;
 use std::time::Duration;
+use std::env;
 
 async fn home(_req: HttpRequest) -> io::Result<NamedFile> {
     Ok(NamedFile::open("www/build/index.html")?)
@@ -59,7 +60,8 @@ async fn main() -> std::io::Result<()> {
                     .with_max_requests(100),
             )
     })
-    .bind_openssl("127.0.0.1:8080", builder)?
+    .bind_openssl(env::var("HOST_IP_HTTPS").expect("No HOST_IP variable found"), builder)?
+    .bind(env::var("HOST_IP_HTTP").expect("No HOST_IP variable found"))?
     .run();
 
     println!("Server running");
