@@ -7,7 +7,7 @@ use db::{DBState, DB};
 
 use actix_files::{Files, NamedFile};
 use actix_ratelimit::{MemoryStore, MemoryStoreActor, RateLimiter};
-use actix_web::{middleware::Logger, web, App, HttpRequest, HttpServer};
+use actix_web::{web, App, HttpRequest, HttpServer};
 
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 
@@ -58,7 +58,6 @@ async fn main() -> std::io::Result<()> {
                     .with_interval(Duration::from_secs(60))
                     .with_max_requests(100),
             )
-            .wrap(Logger::default())
     })
     .bind_openssl("127.0.0.1:8080", builder)?
     .run();
