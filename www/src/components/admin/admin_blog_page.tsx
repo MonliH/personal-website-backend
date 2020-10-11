@@ -16,7 +16,7 @@ import StyledLink from "../styled_link";
 
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-markdown";
-import "ace-builds/src-noconflict/theme-github";
+import "ace-builds/src-noconflict/theme-tomorrow";
 
 const ChangeBlogForm = styled.form`
   display: flex;
@@ -103,21 +103,27 @@ const AdminBlogPage = ({
                 } as BlogEntry);
               }}
             />
-            <ChangeBlogLabel>URL</ChangeBlogLabel>
-            <input
-              type="text"
-              value={revised_blog.url}
-              onChange={(e: React.FormEvent) => {
-                set_revised_blog({
-                  ...revised_blog,
-                  url: (e.target as HTMLInputElement).value,
-                } as BlogEntry);
-              }}
-            />
+            {show_url ? (
+              <>
+                <ChangeBlogLabel>URL</ChangeBlogLabel>
+                <input
+                  type="text"
+                  value={revised_blog.url}
+                  onChange={(e: React.FormEvent) => {
+                    set_revised_blog({
+                      ...revised_blog,
+                      url: (e.target as HTMLInputElement).value,
+                    } as BlogEntry);
+                  }}
+                />
+              </>
+            ) : (
+              <></>
+            )}
             <ChangeBlogLabel>Markdown</ChangeBlogLabel>
             <AceEditor
               mode="markdown"
-              theme="github"
+              theme="tommorow"
               value={revised_blog.md_contents}
               onChange={(md_contents: string) => {
                 set_revised_blog({
