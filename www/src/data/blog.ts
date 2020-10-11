@@ -12,3 +12,14 @@ export const into_blog_entry = (json: any): BlogEntry => {
   json.date = new Date(json.date);
   return json as BlogEntry;
 };
+
+export const default_blog = (): BlogEntry => {
+  return {
+    title: "",
+    url: "",
+    date: new Date("2020-01-01"),
+    html_contents: "",
+    md_contents: "",
+  };
+}
+

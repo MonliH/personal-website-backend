@@ -3,7 +3,6 @@ import { Redirect, useLocation } from "react-router-dom";
 
 import styled from "styled-components";
 
-import useBlogPost from "../../hooks/useBlogPost";
 import Err from "../error";
 import Loading from "../loading";
 
@@ -28,9 +27,8 @@ const ChangeBlogLabel = styled.label`
   color: black;
 `;
 
-const AdminBlogPage = ({ blog_name }: { blog_name: string }) => {
+const AdminBlogPage = ({ blog }: { blog: BlogEntry }) => {
   const location = useLocation();
-  const [blog, blog_404] = useBlogPost(blog_name);
   const [revised_blog, set_revised_blog] = useState<null | BlogEntry>(null);
   const [is_authed, set_is_authed] = useState(false);
   const [message, set_message] = useState("");
@@ -61,17 +59,21 @@ const AdminBlogPage = ({ blog_name }: { blog_name: string }) => {
   };
 
   if (redirect_delete) {
-    return <Redirect to={`${location.pathname}/delete`}/>;
+    return <Redirect to={`${location.pathname}/delete`} />;
   } else if (!is_authed) {
     return <Err code={401} msg="unauthorized" />;
   } else {
-    if (blog_404) {
-      return <Err msg="blog not found" />;
-    } else if (blog && revised_blog) {
+    if (blog && revised_blog) {
       return (
         <div>
           <StyledLink link="/admin/" text="Admin Panel" />
-          <button onClick={() => {set_redirect(true)}}>DELETE</button>
+          <button
+            onClick={() => {
+              set_redirect(true);
+            }}
+          >
+            DELETE
+          </button>
           <ChangeBlogForm onSubmit={on_form_submit}>
             <ChangeBlogLabel>Title</ChangeBlogLabel>
             <input

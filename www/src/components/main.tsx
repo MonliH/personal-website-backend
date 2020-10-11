@@ -1,10 +1,8 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-import Home from "./home/index";
-import Blog from "./blog/index";
-import AdminPanel from "./admin/index";
 import Err from "./error";
+import Loading from "./loading";
 
 import { Globals } from "react-spring";
 
@@ -18,23 +16,29 @@ if (performance.mark && performance.getEntries) {
   });
 }
 
+const Blog = lazy(() => import("./blog/index"));
+const AdminPanel = lazy(() => import("./admin/index"));
+const Home = lazy(() => import("./home/index"));
+
 const Main = () => {
   return (
     <Router>
-      <Switch>
-        <Route exact path="/">
-          <Home />
-        </Route>
-        <Route path="/blog">
-          <Blog />
-        </Route>
-        <Route path="/admin">
-          <AdminPanel />
-        </Route>
-        <Route path="*">
-          <Err />
-        </Route>
-      </Switch>
+      <Suspense fallback={<Loading/>}>
+        <Switch>
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route path="/blog">
+            <Blog />
+          </Route>
+          <Route path="/admin">
+            <AdminPanel />
+          </Route>
+          <Route path="*">
+            <Err />
+          </Route>
+        </Switch>
+      </Suspense>
     </Router>
   );
 };

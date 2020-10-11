@@ -58,6 +58,12 @@ const BlogChangerDiv = styled.div`
   font: 15px "IBM Plex Mono", monospace;
   margin-bottom: 20px;
   margin-top: 20px;
+
+  @media (max-width: 825px) {
+    width: 95vw;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
 `;
 
 const PageText = styled.b`

@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { useRouteMatch } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { Redirect, useRouteMatch } from "react-router-dom";
 
 import styled from "styled-components";
 
@@ -17,7 +17,7 @@ const SubTitle = styled.div`
   color: black;
 `;
 
-const LogOutButton = styled.button``;
+const PanelButton = styled.button``;
 
 interface PanelProps {
   loading: boolean;
@@ -28,15 +28,24 @@ const Panel = (p: PanelProps) => {
   const { path } = useRouteMatch();
 
   const { set_auth_data } = useContext(auth_context);
+  const [new_post, set_new_post] = useState(false);
+
   const on_log_out = () => {
     set_auth_data!(undefined);
   };
 
-  return (
+  const new_blog = () => {
+    set_new_post(true);
+  };
+
+  return new_post ? (
+    <Redirect to="/admin/new" />
+  ) : (
     <div>
       <Title>Admin Panel</Title>
-      <LogOutButton onClick={on_log_out}>Log Out</LogOutButton>
+      <PanelButton onClick={on_log_out}>Log Out</PanelButton>
       <SubTitle>Blogs</SubTitle>
+      <PanelButton onClick={new_blog}>New Post</PanelButton>
       {p.loading ? (
         <Loading />
       ) : (

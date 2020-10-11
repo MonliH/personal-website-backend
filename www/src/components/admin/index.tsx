@@ -7,6 +7,9 @@ import Panel from "./panel";
 import PrivateRoute from "../utils/private_route";
 import AdminBlogPage from "./admin_blog_page";
 import BlogPageChanger from "../blog/blog_page_changer";
+import EditPost from "./edit_post";
+
+import { default_blog } from "../../data/blog";
 
 import useBlogEntries from "../../hooks/useBlogEntries";
 import { posts_per_page } from "../blog/index";
@@ -43,7 +46,8 @@ const AdminPanel = () => {
         <SignIn />
       </Route>
       <PrivateRoute path={"/admin/*/delete"} c={<DeletePost blog_name={split_path[split_path.length-2]}/>} />
-      <PrivateRoute path={"/admin/*"} c={<AdminBlogPage blog_name={split_path[split_path.length-1]}/>} />
+      <PrivateRoute path={"/admin/new"} c={<AdminBlogPage blog={default_blog()}/>} />
+      <PrivateRoute path={"/admin/blog/*"} c={<EditPost blog_path={split_path[split_path.length-1]}/>} />
     </Switch>
   );
 };
