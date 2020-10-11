@@ -55,6 +55,12 @@ impl DB {
         Ok(())
     }
 
+    pub async fn delete_blog<'a>(&self, url: &'a str) -> Result<(), Box<dyn Error>> {
+        let blog_collection = self.blog_db.collection("blog_pages");
+        blog_collection.delete_one(doc! { "url": url }, None).await?;
+        Ok(())
+    }
+
     pub async fn get_blog<'a>(&self, blog_url: &'a str) -> Result<BlogPost, Box<dyn Error>> {
         let blog_collection = self.blog_db.collection("blog_pages");
         let blog: BlogPost = bson::from_document(

@@ -42,6 +42,7 @@ async fn main() -> std::io::Result<()> {
     let server = HttpServer::new(move || {
         App::new()
             .data(Arc::clone(&db) as DBState)
+            .service(admin::admin_delete)
             .service(admin::admin_edits)
             .service(admin::admin_key)
             .service(public_blog::blog_post_by_name)

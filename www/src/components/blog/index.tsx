@@ -10,7 +10,6 @@ import useBg from "../../hooks/useBg";
 export const posts_per_page = 10;
 
 const Blog = () => {
-  const { path } = useRouteMatch();
   const location = useLocation().pathname;
 
   const [pages, page_no, set_page_no, blog_entries, loading] = useBlogEntries(
@@ -21,7 +20,7 @@ const Blog = () => {
 
   return (
     <Switch>
-      <Route exact path={`${path}/`}>
+      <Route exact path={"/blog/"}>
         <BlogHome
           current_page={page_no}
           set_page={set_page_no}

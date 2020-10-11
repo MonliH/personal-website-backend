@@ -29,6 +29,27 @@ pub async fn admin_edits(
     }
 }
 
+#[derive(Deserialize)]
+pub struct AdminDelete {
+    pub key: String,
+    pub url: String,
+}
+
+#[post("/api/admin/delete")]
+pub async fn admin_delete(
+    db: web::Data<DBState>,
+    req: web::Json<AdminDelete>
+) -> HttpResponse {
+    if req.key == env::var("ADMIN_KEY").expect(KEY_ERROR) {
+        match db.delete_blog(&req.url).await {
+            Ok(_) => HttpResponse::Ok().body(""), 
+            Err(e) => HttpResponse::NotFound().body(format!("error deleting: {}", e))
+        }
+    } else {
+        HttpResponse::Forbidden().body("incorrect key")
+    }
+}
+
 #[post("/api/admin/key")]
 pub async fn admin_key(req: String) -> HttpResponse {
     if req == env::var("ADMIN_KEY").expect(KEY_ERROR) {

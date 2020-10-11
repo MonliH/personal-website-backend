@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useLocation } from "react-router-dom";
+import { Redirect, useLocation } from "react-router-dom";
 
 import styled from "styled-components";
 
@@ -28,12 +28,13 @@ const ChangeBlogLabel = styled.label`
   color: black;
 `;
 
-const AdminBlogPage = () => {
-  const { pathname } = useLocation();
-  const [blog, blog_404] = useBlogPost(pathname.split("/").pop() as string);
+const AdminBlogPage = ({ blog_name }: { blog_name: string }) => {
+  const location = useLocation();
+  const [blog, blog_404] = useBlogPost(blog_name);
   const [revised_blog, set_revised_blog] = useState<null | BlogEntry>(null);
   const [is_authed, set_is_authed] = useState(false);
   const [message, set_message] = useState("");
+  const [redirect_delete, set_redirect] = useState(false);
 
   const { auth } = useContext(auth_context);
 
@@ -59,73 +60,62 @@ const AdminBlogPage = () => {
     }
   };
 
-  return (
-    <>
-      {is_authed ? (
-        blog_404 ? (
-          <Err msg="blog not found" />
-        ) : blog && revised_blog ? (
-          <div>
-            <button onSubmit={() => {}}>DELETE</button>
-            <StyledLink link="/admin/" text="Admin Panel" />
-            <ChangeBlogForm onSubmit={on_form_submit}>
-              <ChangeBlogLabel>Title</ChangeBlogLabel>
-              <input
-                type="text"
-                value={revised_blog.title}
-                onChange={(e: React.FormEvent) => {
-                  set_revised_blog({
-                    ...revised_blog,
-                    title: (e.target as HTMLInputElement).value,
-                  } as BlogEntry);
-                }}
-              />
-              <ChangeBlogLabel>URL</ChangeBlogLabel>
-              <input
-                type="text"
-                value={revised_blog.url}
-                onChange={(e: React.FormEvent) => {
-                  set_revised_blog({
-                    ...revised_blog,
-                    url: (e.target as HTMLInputElement).value,
-                  } as BlogEntry);
-                }}
-              />
-              <ChangeBlogLabel>Date</ChangeBlogLabel>
-              <input
-                type="date"
-                value={format_date(revised_blog.date)}
-                onChange={(e: React.FormEvent) => {
-                  set_revised_blog({
-                    ...revised_blog,
-                    date: new Date((e.target as HTMLInputElement).value),
-                  } as BlogEntry);
-                }}
-              />
-              <ChangeBlogLabel>Markdown</ChangeBlogLabel>
-              <AceEditor
-                mode="markdown"
-                theme="github"
-                value={revised_blog.md_contents}
-                onChange={(md_contents: string) => {
-                  set_revised_blog({
-                    ...revised_blog,
-                    md_contents,
-                  } as BlogEntry);
-                }}
-              />
-              <input type="submit" value="Change" />
-              <ChangeBlogLabel>{message}</ChangeBlogLabel>
-            </ChangeBlogForm>
-          </div>
-        ) : (
-          <Loading />
-        )
-      ) : (
-        <Err code={401} msg="unauthorized" />
-      )}
-    </>
-  );
+  if (redirect_delete) {
+    return <Redirect to={`${location.pathname}/delete`}/>;
+  } else if (!is_authed) {
+    return <Err code={401} msg="unauthorized" />;
+  } else {
+    if (blog_404) {
+      return <Err msg="blog not found" />;
+    } else if (blog && revised_blog) {
+      return (
+        <div>
+          <StyledLink link="/admin/" text="Admin Panel" />
+          <button onClick={() => {set_redirect(true)}}>DELETE</button>
+          <ChangeBlogForm onSubmit={on_form_submit}>
+            <ChangeBlogLabel>Title</ChangeBlogLabel>
+            <input
+              type="text"
+              value={revised_blog.title}
+              onChange={(e: React.FormEvent) => {
+                set_revised_blog({
+                  ...revised_blog,
+                  title: (e.target as HTMLInputElement).value,
+                } as BlogEntry);
+              }}
+            />
+            <ChangeBlogLabel>Date</ChangeBlogLabel>
+            <input
+              type="date"
+              value={format_date(revised_blog.date)}
+              onChange={(e: React.FormEvent) => {
+                set_revised_blog({
+                  ...revised_blog,
+                  date: new Date((e.target as HTMLInputElement).value),
+                } as BlogEntry);
+              }}
+            />
+            <ChangeBlogLabel>Markdown</ChangeBlogLabel>
+            <AceEditor
+              mode="markdown"
+              theme="github"
+              value={revised_blog.md_contents}
+              onChange={(md_contents: string) => {
+                set_revised_blog({
+                  ...revised_blog,
+                  md_contents,
+                } as BlogEntry);
+              }}
+            />
+            <input type="submit" value="Change" />
+            <ChangeBlogLabel>{message}</ChangeBlogLabel>
+          </ChangeBlogForm>
+        </div>
+      );
+    } else {
+      return <Loading />;
+    }
+  }
 };
 
 export default AdminBlogPage;
