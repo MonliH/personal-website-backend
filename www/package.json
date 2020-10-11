@@ -31,17 +31,14 @@
     "build": "react-scripts build",
     "watch": "node scripts/watch.js",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "analyze": "source-map-explorer build/static/js/main.*"
   },
   "eslintConfig": {
     "extends": "react-app"
   },
   "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
+    "production": [">0.2%", "not dead", "not op_mini all"],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
@@ -51,6 +48,7 @@
   "devDependencies": {
     "@types/react": "^16.9.46",
     "@types/react-dom": "^16.9.8",
-    "react-is": "^16.13.1"
+    "react-is": "^16.13.1",
+    "source-map-explorer": "^2.5.0"
   }
 }
