@@ -270,8 +270,8 @@ const ProjectPage = styled.div`
 `;
 
 const ProjectsStyled = styled.div`
-  padding-top: 13vh;
-  margin-top: -13vh;
+  padding-top: 14vh;
+  margin-top: -14vh;
   margin-bottom: 20vh;
   background-color: #1d1d1d;
 `;

@@ -35,7 +35,7 @@ const AboutMeSection = styled.div`
 const AboutStyled = styled.div`
   padding-top: 20vh;
   margin-top: -24vh;
-  margin-bottom: 10vh;
+  margin-bottom: 11vh;
   background-color: #1d1d1d;
 `;
 
