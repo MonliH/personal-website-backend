@@ -23,7 +23,7 @@ const Home = lazy(() => import("./home/index"));
 const Main = () => {
   return (
     <Router>
-      <Suspense fallback={<Loading/>}>
+      <Suspense fallback={<Loading />}>
         <Switch>
           <Route exact path="/">
             <Home />

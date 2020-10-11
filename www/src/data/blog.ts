@@ -21,5 +21,4 @@ export const default_blog = (): BlogEntry => {
     html_contents: "",
     md_contents: "",
   };
-}
-
+};

@@ -27,7 +27,13 @@ const ChangeBlogLabel = styled.label`
   color: black;
 `;
 
-const AdminBlogPage = ({ blog }: { blog: BlogEntry }) => {
+const AdminBlogPage = ({
+  blog,
+  show_url,
+}: {
+  blog: BlogEntry;
+  show_url?: boolean;
+}) => {
   const location = useLocation();
   const [revised_blog, set_revised_blog] = useState<null | BlogEntry>(null);
   const [is_authed, set_is_authed] = useState(false);
@@ -94,6 +100,17 @@ const AdminBlogPage = ({ blog }: { blog: BlogEntry }) => {
                 set_revised_blog({
                   ...revised_blog,
                   date: new Date((e.target as HTMLInputElement).value),
+                } as BlogEntry);
+              }}
+            />
+            <ChangeBlogLabel>URL</ChangeBlogLabel>
+            <input
+              type="text"
+              value={revised_blog.url}
+              onChange={(e: React.FormEvent) => {
+                set_revised_blog({
+                  ...revised_blog,
+                  url: (e.target as HTMLInputElement).value,
                 } as BlogEntry);
               }}
             />

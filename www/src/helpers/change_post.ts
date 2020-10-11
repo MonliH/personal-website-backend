@@ -2,7 +2,7 @@ import { BlogEntry } from "../data/blog";
 import format_date from "./format_date";
 import hljs from "highlight.js";
 
-const { Remarkable } = require('remarkable');
+const { Remarkable } = require("remarkable");
 
 let md = new Remarkable({
   highlight: function (str: string, lang: string) {
