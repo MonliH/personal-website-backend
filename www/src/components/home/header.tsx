@@ -3,7 +3,7 @@ import React from "react";
 import styled from "styled-components";
 
 import { HashLink } from "react-router-hash-link";
-import GithubImage from "../img/github-white.png";
+import GithubImage from "../../img/github-white.png";
 
 const HeaderMain = styled.div`
   overflow: hidden;
@@ -66,7 +66,7 @@ const HeaderImage = styled.img`
 const links = [
   ["About Me", "#about"],
   ["My Projects", "#projects"],
-  //["Blog", "blog"],
+  ["Blog", "blog"],
   ["Contact Me", "#contact"],
 ];
 

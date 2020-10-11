@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import Header from "../header";
+import Header from "./header";
 
 import { NameTitleWrapper } from "../wrapper";
 import { shared_title } from "../title";
