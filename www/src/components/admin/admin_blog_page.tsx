@@ -17,6 +17,7 @@ import StyledLink from "../styled_link";
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-markdown";
 import "ace-builds/src-noconflict/theme-tomorrow";
+import "ace-builds/src-noconflict/keybinding-vim";
 
 const ChangeBlogForm = styled.form`
   display: flex;
@@ -123,7 +124,7 @@ const AdminBlogPage = ({
             <ChangeBlogLabel>Markdown</ChangeBlogLabel>
             <AceEditor
               mode="markdown"
-              theme="tommorow"
+              theme="tomorrow"
               value={revised_blog.md_contents}
               onChange={(md_contents: string) => {
                 set_revised_blog({
@@ -131,6 +132,8 @@ const AdminBlogPage = ({
                   md_contents,
                 } as BlogEntry);
               }}
+              keyboardHandler="vim"
+              fontSize={16}
             />
             <input type="submit" value="Change" />
             <ChangeBlogLabel>{message}</ChangeBlogLabel>
