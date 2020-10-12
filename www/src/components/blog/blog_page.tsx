@@ -49,7 +49,7 @@ const BlogContentWrapper = styled.div`
 const SubBlogPage = ({ blog }: { blog: null | BlogEntry }) => {
   return (
     <BlogContentWrapper>
-      <BlogHeader blog />
+      <BlogHeader blog font="20px"/>
       {blog ? (
         <>
           <BlogTitle>{blog.title}</BlogTitle>

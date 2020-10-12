@@ -18,9 +18,9 @@ const StyledAnimatedLink = styled(AnimatedLink)`
   font: inherit;
 `;
 
-const BlogHeader = ({ blog }: { blog?: boolean }) => {
+const BlogHeader = ({ blog, font }: { blog?: boolean, font?: string }) => {
   return (
-    <Header>
+    <Header style={{fontSize: font}}>
       <StyledAnimatedLink link="/" text="Jonathan Li" />
       's {blog ? <StyledAnimatedLink link="/blog" text="blog" /> : <>blog</>}
     </Header>
