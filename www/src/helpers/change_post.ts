@@ -6,6 +6,7 @@ const { Remarkable } = require("remarkable");
 
 let md = new Remarkable({
   typographer: true,
+  html: true,
   highlight: function (str: string, lang: string) {
     if (lang && hljs.getLanguage(lang)) {
       try {
