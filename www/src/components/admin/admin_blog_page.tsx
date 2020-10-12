@@ -133,6 +133,7 @@ const AdminBlogPage = ({
                 } as BlogEntry);
               }}
               keyboardHandler="vim"
+              width="50vw"
               fontSize={16}
             />
             <input type="submit" value="Change" />
