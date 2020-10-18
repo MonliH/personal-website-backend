@@ -29,19 +29,6 @@ const tag_color = (tag: Tag) => {
   }
 };
 
-function useWindowSize() {
-  const [size, setSize] = useState([0, 0]);
-  useLayoutEffect(() => {
-    function updateSize() {
-      setSize([window.innerWidth, window.innerHeight]);
-    }
-    window.addEventListener("resize", updateSize);
-    updateSize();
-    return () => window.removeEventListener("resize", updateSize);
-  }, []);
-  return size;
-}
-
 interface ProjectCardProps {
   project: Project;
   cardw: number;
@@ -140,6 +127,7 @@ const ProjectCard = (p: ProjectCardProps) => {
 interface ProjectGridProps {
   items: Array<Project>;
   visible: boolean;
+  width: number;
 }
 
 interface ProjectPosition {
@@ -153,8 +141,7 @@ const ProjectGridStyled = styled(animated.div)`
 `;
 
 const ProjectGrid = (p: ProjectGridProps) => {
-  const [vwidth] = useWindowSize();
-  const width = vwidth * 0.7;
+  const width = p.width * 0.7;
 
   // Card width
   const cardw = 300;
@@ -167,8 +154,9 @@ const ProjectGrid = (p: ProjectGridProps) => {
   const cardhm = 20;
 
   // Number of comlumns
-  const approx_cols = Math.floor(width / cardw);
-  const columns = Math.floor((width - cardwm * approx_cols) / cardw); // Account for margin after approximate cols
+  const approx_cols = Math.floor(width / cardw) || 1;
+  const columns =
+    approx_cols != 1 ? Math.floor((width - cardwm * approx_cols) / cardw) : 1; // Account for margin after approximate cols
 
   let counter_col = 0;
   let counter_row = 0;
@@ -213,7 +201,6 @@ const ProjectGrid = (p: ProjectGridProps) => {
 
   const fragment = transitions((style: any, item: ProjectPosition) => {
     let { xy, ...others } = style;
-
     return (
       <animated.div
         key={item.project.rank}
@@ -276,7 +263,7 @@ const ProjectsStyled = styled.div`
   background-color: #1d1d1d;
 `;
 
-const Projects = () => {
+const Projects = ({ width }: { width: number }) => {
   const [items] = useState(project_list);
   const [ref, visible] = useInView({
     triggerOnce: true,
@@ -287,7 +274,11 @@ const Projects = () => {
       <ProjectPage>
         <Title>My Projects&thinsp;</Title>
         <div ref={ref}>
-          <ProjectGrid items={items} visible={visible}></ProjectGrid>
+          <ProjectGrid
+            items={items}
+            visible={visible}
+            width={width}
+          ></ProjectGrid>
         </div>
       </ProjectPage>
     </ProjectsStyled>

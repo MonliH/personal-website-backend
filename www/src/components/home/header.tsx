@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 
 import styled from "styled-components";
 
 import { HashLink } from "react-router-hash-link";
+import { animated, useSpring } from "react-spring";
 import GithubImage from "../../img/github-white.png";
+import HeaderIcon from "../../img/menu.svg";
 
 const HeaderMain = styled.div`
   overflow: hidden;
@@ -63,6 +65,12 @@ const HeaderImage = styled.img`
   height: 27px;
 `;
 
+const HeaderNav = styled.button`
+  float: right;
+  background: none;
+  border: none;
+`;
+
 const links = [
   ["About Me", "#about"],
   ["My Projects", "#projects"],
@@ -70,7 +78,46 @@ const links = [
   ["Contact Me", "#contact"],
 ];
 
-const Header = () => {
+interface HeaderSidebarProps {
+  links: Array<JSX.Element>;
+  nav_on: boolean;
+  set_nav_on: (val: boolean) => void;
+}
+
+const Absolute = styled(animated.div)`
+  position: absolute;
+  width: 0vw;
+  height: 100vh;
+  z-index: 101;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding-top: 10vh;
+`;
+
+const Right = styled.div`
+  float: right;
+  width: fit-content;
+  margin-top: 15px;
+`;
+
+const NavSidebar = (p: HeaderSidebarProps) => {
+  const style = useSpring({ width: p.nav_on ? "100vw" : "0vw" });
+  return (
+    <Absolute onClick={() => p.set_nav_on(false)} style={style as any}>
+      {p.links.map((link: JSX.Element, i: number) => {
+        return <Right key={i}>{link}</Right>;
+      })}
+    </Absolute>
+  );
+};
+
+const Header = ({ width }: { width: number }) => {
+  const [nav_on, set_nav_on] = useState(false);
+
   let links_left = new Array(links.length);
   for (const [display, hash] of links) {
     links_left.push(
@@ -80,27 +127,41 @@ const Header = () => {
     );
   }
 
-  return (
-    <HeaderMain>
-      <HeaderName to="/#master">Jonathan Li</HeaderName>
-      <HeaderLinks>
-        {links_left}
+  // Github logo
+  links_left.push(
+    <HeaderLinkGithub
+      key="github-image"
+      href="https://github.com/MonliH"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="header-link"
+    >
+      <HeaderImage
+        src={GithubImage}
+        id="header-image"
+        alt="Github"
+      ></HeaderImage>
+    </HeaderLinkGithub>
+  );
 
-        {/* Github logo */}
-        <HeaderLinkGithub
-          href="https://github.com/MonliH"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="header-link"
-        >
-          <HeaderImage
-            src={GithubImage}
-            id="header-image"
-            alt="Github"
-          ></HeaderImage>
-        </HeaderLinkGithub>
-      </HeaderLinks>
-    </HeaderMain>
+  const toggle_nav = () => {
+    set_nav_on(!nav_on);
+  };
+
+  return (
+    <>
+      <NavSidebar nav_on={nav_on} set_nav_on={set_nav_on} links={links_left} />
+      <HeaderMain>
+        <HeaderName to="/#master">Jonathan Li</HeaderName>
+        {width < 644 ? (
+          <HeaderNav onClick={() => toggle_nav()} style={{ marginTop: "10px" }}>
+            <HeaderImage src={HeaderIcon} />
+          </HeaderNav>
+        ) : (
+          <HeaderLinks>{links_left}</HeaderLinks>
+        )}
+      </HeaderMain>
+    </>
   );
 };
 

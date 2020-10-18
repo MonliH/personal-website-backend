@@ -9,6 +9,8 @@ import Contact from "./contact";
 import About from "./about";
 import Projects from "./projects";
 
+import useWindowSize from "../../hooks/useWindowSize";
+
 import styled from "styled-components";
 
 const SubHeading = styled.div`
@@ -17,6 +19,12 @@ const SubHeading = styled.div`
   top: 100px;
   padding-left: 10px;
   color: white;
+
+
+  @media (max-width: 430px) {
+    font-size: 20px;
+    top: 70px;
+  }
 `;
 
 const Jonathan = styled.div`
@@ -37,6 +45,11 @@ const Li = styled.div`
   background-position: left 19px top 0px;
   height: 90px;
   white-space: pre;
+
+  @media (max-width: 430px) {
+    background-position: left 10px top 0px;
+    top: 250px;
+  }
 `;
 
 const TitlePage = styled.div`
@@ -95,24 +108,26 @@ const Home = () => {
     document.body.style.backgroundColor = "#1D1D1D";
   }, []);
 
-  const mappings: Array<[string, React.FunctionComponent]> = [
-    ["about", About],
-    ["projects", Projects],
-    ["contact", Contact],
+  const [width, height] = useWindowSize();
+
+  const mappings: Array<[string, JSX.Element]> = [
+    ["about", <About/>],
+    ["projects", <Projects width={width}/>],
+    ["contact", <Contact/>],
   ];
 
   let other_pages = new Array(0);
-  for (const [id_name, Page] of mappings) {
+  for (const [id_name, page] of mappings) {
     other_pages.push(
       <div key={id_name} id={id_name}>
-        <Page></Page>
+        {page}
       </div>
     );
   }
 
   return (
     <div id="master">
-      <Header />
+      <Header width={width}/>
       <div>
         <FrontPage>
           <TitlePage>

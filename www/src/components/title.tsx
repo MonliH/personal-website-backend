@@ -23,6 +23,12 @@ export const shared_title = `
     )
     no-repeat;
   color: #ff3d0d;
+
+  @media (max-width: 430px) {
+    font-size: 40px;
+    background-position: left 10px top 25px;
+    height: 50px;
+  }
 `;
 
 export const Title = styled.pre`
