@@ -22,6 +22,7 @@ const ContactForm = styled.form`
   
   @media (max-width: 580px) {
     width: 80vw;
+    padding-bottom: 50px;
   }
 `;
 

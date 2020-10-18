@@ -261,6 +261,10 @@ const ProjectsStyled = styled.div`
   margin-top: -14vh;
   margin-bottom: 20vh;
   background-color: #1d1d1d;
+
+  @media (max-width: 500px) {
+    margin-bottom: 10vh;
+  }
 `;
 
 const Projects = ({ width }: { width: number }) => {

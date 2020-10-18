@@ -17,4 +17,8 @@ export const NameTitleWrapper = styled.div`
   padding-top: 200px;
   margin-left: 15vw;
   z-index: 0;
+
+  @media (max-width: 430px) {
+    padding-top: 100px;
+  }
 `;

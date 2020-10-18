@@ -48,7 +48,7 @@ const Li = styled.div`
 
   @media (max-width: 430px) {
     background-position: left 10px top 0px;
-    top: 250px;
+    top: 145px;
   }
 `;
 
@@ -58,12 +58,20 @@ const TitlePage = styled.div`
   height: 70vh;
   width: 100vw;
   padding: 0;
+
+  @media (max-width: 430px) {
+    height: fit-content;
+  }
 `;
 
 const FrontPage = styled.div`
   display: flex;
   flex-direction: row;
   background: #262626;
+
+  @media (max-width: 430px) {
+    flex-direction: column;
+  }
 `;
 
 const TitleImage = styled.img`
@@ -78,6 +86,13 @@ const TitleImage = styled.img`
   transform: translateY(0);
   z-index: 10;
   margin-left: -100px;
+
+  @media (max-width: 430px) {
+    margin-top: 100px;
+    width: 85vw;
+    height: 85vw;
+    margin-left: 7vw;
+  }
 `;
 
 const Bridge = styled.div`
@@ -101,6 +116,10 @@ const Bridge = styled.div`
     rgba(29, 29, 29, 1) 100%
   );
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#262626", endColorstr="#1d1d1d", GradientType=1);
+
+  @media (max-width: 430px) {
+    height: 14vh;
+  };
 `;
 
 const Home = () => {
@@ -111,7 +130,7 @@ const Home = () => {
   const [width, height] = useWindowSize();
 
   const mappings: Array<[string, JSX.Element]> = [
-    ["about", <About/>],
+    ["about", <About width={width}/>],
     ["projects", <Projects width={width}/>],
     ["contact", <Contact/>],
   ];

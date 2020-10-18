@@ -37,28 +37,38 @@ const AboutStyled = styled.div`
   margin-top: -24vh;
   margin-bottom: 11vh;
   background-color: #1d1d1d;
+
+  @media (max-width: 430px) {
+    padding-top: 10vh;
+    margin-top: -14vh;
+  }
 `;
 
-const About = () => {
+const About = ({ width }: { width: number }) => {
   let video_element = useRef(null);
+  const out_of_view = width < 901;
   return (
     <AboutStyled>
       <WrapperCenter>
         <WrapperInner>
-          <Title style={{ marginLeft: "50px" }}>About Me&thinsp;</Title>
-          <AboutMeSection>
-            <AboutVideo
-              onMouseEnter={() => Video.enter(video_element)}
-              onMouseLeave={() => Video.leave(video_element)}
-              ref={video_element}
-              playsInline
-              muted
-              loop
-            >
-              <source src={AboutMeWEBM} type="video/webm" />
-              <source src={AboutMeMP4} type="video/mp4" />
-              Your browser does not support the video element.
-            </AboutVideo>
+          <Title style={out_of_view ? {} : { marginLeft: "50px" }}>About Me&thinsp;</Title>
+          <AboutMeSection style={out_of_view? {marginTop: "10px", width: "80vw"} : {}}>
+            { out_of_view ? (
+              <></>
+            ) : (
+              <AboutVideo
+                onMouseEnter={() => Video.enter(video_element)}
+                onMouseLeave={() => Video.leave(video_element)}
+                ref={video_element}
+                playsInline
+                muted
+                loop
+              >
+                <source src={AboutMeWEBM} type="video/webm" />
+                <source src={AboutMeMP4} type="video/mp4" />
+                Your browser does not support the video element.
+              </AboutVideo>
+            )}
             <AboutText>
               Hey! My name is Jonathan Li.
               <br />
