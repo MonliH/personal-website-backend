@@ -19,11 +19,19 @@ const ContactForm = styled.form`
   flex-direction: column;
   width: 500px;
   font: "Montserrat", sans-serif;
+  
+  @media (max-width: 580px) {
+    width: 80vw;
+  }
 `;
 
 const EntryContainer = styled.div`
   display: flex;
   flex-direction: row;
+
+  @media (max-width: 580px) {
+    flex-direction: column;
+  }
 `;
 
 const Entry = styled.label`
@@ -32,6 +40,11 @@ const Entry = styled.label`
   margin-right: 10px;
   margin-bottom: 20px;
   flex: 0 0 245px;
+
+  @media (max-width: 580px) {
+    flex: 0 0 0;
+    width: 80vw;
+  }
 `;
 
 const EntryText = styled.div`
