@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Router, Switch, Route } from "react-router-dom";
 
+import history from "../history";
 import Err from "./error";
 import Loading from "./loading";
 
@@ -19,10 +20,11 @@ if (performance.mark && performance.getEntries) {
 const Blog = lazy(() => import("./blog/index"));
 const AdminPanel = lazy(() => import("./admin/index"));
 const Home = lazy(() => import("./home/index"));
+const ThankYouContact = lazy(() => import("./thank_you"));
 
 const Main = () => {
   return (
-    <Router>
+    <Router history={history}>
       <Suspense fallback={<Loading />}>
         <Switch>
           <Route exact path="/">
@@ -33,6 +35,9 @@ const Main = () => {
           </Route>
           <Route path="/admin">
             <AdminPanel />
+          </Route>
+          <Route path="/thank-you-contact">
+            <ThankYouContact />
           </Route>
           <Route path="*">
             <Err />

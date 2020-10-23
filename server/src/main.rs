@@ -2,6 +2,7 @@ mod admin;
 mod blog;
 mod db;
 mod public_blog;
+mod submission;
 
 use db::{DBState, DB};
 
@@ -14,10 +15,10 @@ use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use dotenv::dotenv;
 use env_logger::Env;
 
+use std::env;
 use std::io;
 use std::sync::Arc;
 use std::time::Duration;
-use std::env;
 
 async fn home(_req: HttpRequest) -> io::Result<NamedFile> {
     Ok(NamedFile::open("www/build/index.html")?)
@@ -60,7 +61,10 @@ async fn main() -> std::io::Result<()> {
                     .with_max_requests(100),
             )
     })
-    .bind_openssl(env::var("HOST_IP_HTTPS").expect("No HOST_IP variable found"), builder)?
+    .bind_openssl(
+        env::var("HOST_IP_HTTPS").expect("No HOST_IP variable found"),
+        builder,
+    )?
     .bind(env::var("HOST_IP_HTTP").expect("No HOST_IP variable found"))?
     .run();
 

@@ -15,14 +15,13 @@ pub struct AdminEdit {
 const KEY_ERROR: &str = "Could not find ADMIN_KEY variable, did you forget to set it?";
 
 #[post("/api/admin/edit")]
-pub async fn admin_edits(
-    db: web::Data<DBState>,
-    req: web::Json<AdminEdit>
-) -> HttpResponse {
+pub async fn admin_edits(db: web::Data<DBState>, req: web::Json<AdminEdit>) -> HttpResponse {
     if req.key == env::var("ADMIN_KEY").expect(KEY_ERROR) {
         match db.upsert_blog(&req.blog).await {
-            Ok(_) => HttpResponse::Ok().body(""), 
-            Err(e) => HttpResponse::InternalServerError().body(format!("failed to set value: {}", e))
+            Ok(_) => HttpResponse::Ok().body(""),
+            Err(e) => {
+                HttpResponse::InternalServerError().body(format!("failed to set value: {}", e))
+            }
         }
     } else {
         HttpResponse::Forbidden().body("incorrect key")
@@ -36,14 +35,11 @@ pub struct AdminDelete {
 }
 
 #[post("/api/admin/delete")]
-pub async fn admin_delete(
-    db: web::Data<DBState>,
-    req: web::Json<AdminDelete>
-) -> HttpResponse {
+pub async fn admin_delete(db: web::Data<DBState>, req: web::Json<AdminDelete>) -> HttpResponse {
     if req.key == env::var("ADMIN_KEY").expect(KEY_ERROR) {
         match db.delete_blog(&req.url).await {
-            Ok(_) => HttpResponse::Ok().body(""), 
-            Err(e) => HttpResponse::NotFound().body(format!("error deleting: {}", e))
+            Ok(_) => HttpResponse::Ok().body(""),
+            Err(e) => HttpResponse::NotFound().body(format!("error deleting: {}", e)),
         }
     } else {
         HttpResponse::Forbidden().body("incorrect key")
@@ -53,8 +49,8 @@ pub async fn admin_delete(
 #[post("/api/admin/key")]
 pub async fn admin_key(req: String) -> HttpResponse {
     if req == env::var("ADMIN_KEY").expect(KEY_ERROR) {
-        return HttpResponse::Ok().body("correct key")
+        return HttpResponse::Ok().body("correct key");
     } else {
-        return HttpResponse::Forbidden().body("incorrect key")
+        return HttpResponse::Forbidden().body("incorrect key");
     }
 }

@@ -1,5 +1,7 @@
 import React from "react";
 
+import history from "../history";
+
 const capitalize = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
@@ -33,6 +35,8 @@ export const submit = (
         }
       } else {
         set_status("Message sent successfully!");
+        history.push("/thank-you-contact");
+        window.location.reload();
       }
     });
 };

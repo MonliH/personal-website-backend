@@ -1,4 +1,5 @@
 use crate::blog::BlogPost;
+use crate::submission::Submission;
 
 use std::convert::TryInto;
 use std::env;
@@ -9,7 +10,7 @@ use mongodb::bson;
 use mongodb::bson::doc;
 use mongodb::{
     options::{ClientOptions, UpdateModifications, UpdateOptions},
-    Client, Database,
+    Client, Collection,
 };
 
 use tokio::stream::StreamExt;
@@ -17,8 +18,8 @@ use tokio::stream::StreamExt;
 pub type DBState = Arc<DB>;
 
 pub struct DB {
-    client: Client,
-    blog_db: Database,
+    blog_collection: Collection,
+    contact_collection: Collection,
 }
 
 impl DB {
@@ -30,22 +31,58 @@ impl DB {
         let client = Client::with_options(config_options)?;
 
         Ok(Self {
-            blog_db: client.database("blog"),
-            client,
+            blog_collection: client.database("blog").collection("blog_pages"),
+            contact_collection: client.database("contact").collection("submissions"),
         })
     }
 
+    pub async fn get_num_of_contacts(&self) -> Result<usize, Box<dyn Error>> {
+        Ok(self.contact_collection
+            .count_documents(None, None)
+            .await?
+            .try_into()?)
+    }
+
+    pub async fn insert_submission(&self, submission: Submission) -> Result<(), Box<dyn Error>> {
+        self.contact_collection.update_one(doc!{}, UpdateModifications::Document(bson::to_document(&submission)?), None).await?;
+        Ok(())
+    }
+
+    pub async fn get_recent_submissions(&self, start: u32, end: u32) -> Result<Vec<Submission>, Box<dyn Error>> {
+        let submissions: Vec<Submission> = self.contact_collection
+            .aggregate(
+                vec![
+                    doc! {
+                        "$sort": { "date": -1 }
+                    },
+                    doc! {
+                        "$limit": start + end,
+                    },
+                    doc! {
+                        "$skip": start
+                    },
+                ],
+                None,
+            )
+            .await?
+            .map(|document| {
+                bson::from_document(document.map_err(|e| Box::new(e) as Box<dyn Error>)?)
+                    .map_err(|e| Box::new(e) as Box<dyn Error>)
+            })
+            .collect::<Result<Vec<Submission>, Box<dyn Error>>>()
+            .await?;
+        Ok(submissions)
+    }
+
     pub async fn get_num_of_blogs(&self) -> Result<usize, Box<dyn Error>> {
-        let blog_collection = self.blog_db.collection("blog_pages");
-        Ok(blog_collection
+        Ok(self.blog_collection
             .count_documents(None, None)
             .await?
             .try_into()?)
     }
 
     pub async fn upsert_blog(&self, blog: &BlogPost) -> Result<(), Box<dyn Error>> {
-        let blog_collection = self.blog_db.collection("blog_pages");
-        blog_collection
+        self.blog_collection
             .update_one(
                 doc! { "url": &blog.url },
                 UpdateModifications::Document(bson::to_document(blog)?),
@@ -56,15 +93,15 @@ impl DB {
     }
 
     pub async fn delete_blog<'a>(&self, url: &'a str) -> Result<(), Box<dyn Error>> {
-        let blog_collection = self.blog_db.collection("blog_pages");
-        blog_collection.delete_one(doc! { "url": url }, None).await?;
+        self.blog_collection
+            .delete_one(doc! { "url": url }, None)
+            .await?;
         Ok(())
     }
 
     pub async fn get_blog<'a>(&self, blog_url: &'a str) -> Result<BlogPost, Box<dyn Error>> {
-        let blog_collection = self.blog_db.collection("blog_pages");
         let blog: BlogPost = bson::from_document(
-            blog_collection
+            self.blog_collection
                 .find_one(doc! { "url": &blog_url }, None)
                 .await?
                 .ok_or("Could not find blog post")?,
@@ -78,8 +115,7 @@ impl DB {
         start: u32,
         end: u32,
     ) -> Result<Vec<BlogPost>, Box<dyn Error>> {
-        let blog_collection = self.blog_db.collection("blog_pages");
-        let blog: Vec<BlogPost> = blog_collection
+        let blogs: Vec<BlogPost> = self.blog_collection
             .aggregate(
                 vec![
                     doc! {
@@ -101,6 +137,6 @@ impl DB {
             })
             .collect::<Result<Vec<BlogPost>, Box<dyn Error>>>()
             .await?;
-        Ok(blog)
+        Ok(blogs)
     }
 }

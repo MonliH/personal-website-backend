@@ -26,7 +26,10 @@ pub async fn blog_entries(
             serde_json::to_string(
                 match &db.get_recent_blogs(starting as u32, ending as u32).await {
                     Ok(blogs) => blogs,
-                    Err(e) => return HttpResponse::RangeNotSatisfiable().body(format!("no blogs found: {}", e)),
+                    Err(e) => {
+                        return HttpResponse::RangeNotSatisfiable()
+                            .body(format!("no blogs found: {}", e))
+                    }
                 },
             )
             .expect("Failed to serialize blog posts")
@@ -40,7 +43,8 @@ pub async fn blog_post_amounts(db: web::Data<DBState>, _req: HttpRequest) -> Htt
         .body(match db.get_num_of_blogs().await {
             Ok(nums) => nums.to_string(),
             Err(e) => {
-                return HttpResponse::InternalServerError().body(format!("failed to get query: {}", e));
+                return HttpResponse::InternalServerError()
+                    .body(format!("failed to get query: {}", e));
             }
         })
 }
