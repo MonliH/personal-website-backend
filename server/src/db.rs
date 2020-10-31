@@ -24,11 +24,10 @@ pub struct DB {
 
 impl DB {
     pub async fn new() -> Result<Self, Box<dyn Error>> {
-        let config_options = ClientOptions::parse(
-            &env::var("MONGO_URL").expect("Invalid/nonexistent MONGO_URL entry."),
+        let client = Client::with_uri_str(
+            &env::var("MONGO_URL").expect("Non-existent MONGO_URL entry."),
         )
         .await?;
-        let client = Client::with_options(config_options)?;
 
         Ok(Self {
             blog_collection: client.database("blog").collection("blog_pages"),
@@ -37,19 +36,31 @@ impl DB {
     }
 
     pub async fn get_num_of_contacts(&self) -> Result<usize, Box<dyn Error>> {
-        Ok(self.contact_collection
+        Ok(self
+            .contact_collection
             .count_documents(None, None)
             .await?
             .try_into()?)
     }
 
     pub async fn insert_submission(&self, submission: Submission) -> Result<(), Box<dyn Error>> {
-        self.contact_collection.update_one(doc!{}, UpdateModifications::Document(bson::to_document(&submission)?), None).await?;
+        self.contact_collection
+            .update_one(
+                doc! {},
+                UpdateModifications::Document(bson::to_document(&submission)?),
+                None,
+            )
+            .await?;
         Ok(())
     }
 
-    pub async fn get_recent_submissions(&self, start: u32, end: u32) -> Result<Vec<Submission>, Box<dyn Error>> {
-        let submissions: Vec<Submission> = self.contact_collection
+    pub async fn get_recent_submissions(
+        &self,
+        start: u32,
+        end: u32,
+    ) -> Result<Vec<Submission>, Box<dyn Error>> {
+        let submissions: Vec<Submission> = self
+            .contact_collection
             .aggregate(
                 vec![
                     doc! {
@@ -75,7 +86,8 @@ impl DB {
     }
 
     pub async fn get_num_of_blogs(&self) -> Result<usize, Box<dyn Error>> {
-        Ok(self.blog_collection
+        Ok(self
+            .blog_collection
             .count_documents(None, None)
             .await?
             .try_into()?)
@@ -115,7 +127,8 @@ impl DB {
         start: u32,
         end: u32,
     ) -> Result<Vec<BlogPost>, Box<dyn Error>> {
-        let blogs: Vec<BlogPost> = self.blog_collection
+        let blogs: Vec<BlogPost> = self
+            .blog_collection
             .aggregate(
                 vec![
                     doc! {

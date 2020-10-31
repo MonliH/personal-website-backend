@@ -10,21 +10,3 @@ pub struct BlogPost {
     pub date: NaiveDate,
     pub url: String,
 }
-
-impl BlogPost {
-    pub fn new(
-        title: String,
-        html_contents: String,
-        md_contents: String,
-        date: NaiveDate,
-        url: String,
-    ) -> Self {
-        Self {
-            title,
-            html_contents,
-            md_contents,
-            date,
-            url,
-        }
-    }
-}

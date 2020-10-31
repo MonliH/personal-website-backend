@@ -1,6 +1,7 @@
 mod admin;
 mod blog;
 mod db;
+mod embeds;
 mod public_blog;
 mod submission;
 
@@ -8,9 +9,7 @@ use db::{DBState, DB};
 
 use actix_files::{Files, NamedFile};
 use actix_ratelimit::{MemoryStore, MemoryStoreActor, RateLimiter};
-use actix_web::{web, App, HttpRequest, HttpServer};
-
-use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
+use actix_web::{web, App, HttpRequest, HttpServer, middleware::NormalizePath};
 
 use dotenv::dotenv;
 use env_logger::Env;
@@ -26,18 +25,11 @@ async fn home(_req: HttpRequest) -> io::Result<NamedFile> {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    std::env::set_var("RUST_LOG", "actix_web=debug");
     dotenv().ok();
 
     env_logger::from_env(Env::default().default_filter_or("info")).init();
 
     let db = Arc::new(DB::new().await.expect("Failed to get DB handle"));
-
-    let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
-    builder
-        .set_private_key_file("key.pem", SslFiletype::PEM)
-        .unwrap();
-    builder.set_certificate_chain_file("cert.pem").unwrap();
 
     let store = MemoryStore::new();
 
@@ -50,6 +42,8 @@ async fn main() -> std::io::Result<()> {
             .service(public_blog::blog_post_by_name)
             .service(public_blog::blog_post_amounts)
             .service(public_blog::blog_entries)
+            .service(embeds::discord_embed_json)
+            .service(embeds::simple_embed)
             .service(
                 Files::new("/*", "www/build/")
                     .index_file("www/build/index.html")
@@ -61,10 +55,6 @@ async fn main() -> std::io::Result<()> {
                     .with_max_requests(100),
             )
     })
-    .bind_openssl(
-        env::var("HOST_IP_HTTPS").expect("No HOST_IP variable found"),
-        builder,
-    )?
     .bind(env::var("HOST_IP_HTTP").expect("No HOST_IP variable found"))?
     .run();
 
