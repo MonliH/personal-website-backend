@@ -19,7 +19,7 @@ pub async fn simple_embed(web::Query(q): web::Query<EmbedQuery>) -> HttpResponse
     <meta content="" property="og:title" />
     <meta content="" property="og:description" />
     <meta content="https://monolith.vision/magic.png" property="og:image" />
-    <meta name="theme-color" content="{}" />
+    <meta name="theme-color" content="\#{}" />
     <link
       type="application/json+oembed"
       href="https://monolith.vision/discord-embed/json?author={}"
@@ -31,7 +31,7 @@ pub async fn simple_embed(web::Query(q): web::Query<EmbedQuery>) -> HttpResponse
 </html>"#,
         q.color
             .map(|val| Cow::Owned(val))
-            .unwrap_or(Cow::Borrowed("#000000")),
+            .unwrap_or(Cow::Borrowed("fc5549")),
         q.text
             .map(|val| Cow::Owned(val))
             .unwrap_or(Cow::Borrowed("Nothing To See Here..."))
