@@ -24,7 +24,7 @@
     "react-spring": "9.0.0-rc.3",
     "remarkable": "^2.0.1",
     "styled-components": "^5.2.0",
-    "typescript": "~3.7.2"
+    "typescript": "^3.7.5"
   },
   "scripts": {
     "start": "react-scripts start",
