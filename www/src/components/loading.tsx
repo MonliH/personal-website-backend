@@ -1,6 +1,7 @@
 import React from "react";
 
 import styled, { keyframes } from "styled-components";
+import invert_color from "../helpers/colors";
 
 const rotate = keyframes`
   from {
@@ -21,8 +22,32 @@ const Loader = styled.div`
   animation: ${rotate} 2s linear infinite;
 `;
 
+const LoaderWrapper = styled.div`
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+`;
+
+const LoadingText = styled.div`
+  margin-top: 15px;
+  font: 600 20px "Open Sans", monospace;
+`;
+
 const Loading = () => {
-  return <Loader />;
+  return (
+    <LoaderWrapper>
+      <Loader />
+      <LoadingText
+        style={{
+          color: invert_color(document.body.style.backgroundColor),
+        }}
+      >
+        Loading...
+      </LoadingText>
+    </LoaderWrapper>
+  );
 };
 
 export default Loading;
