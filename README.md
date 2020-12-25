@@ -1,20 +1,17 @@
-# personal-website
+# personal-website-backend
 
-My personal website. Live at [monolith.vision](https://monolith.vision).
+The backend for my personal website. Live at [monolith.vision](https://monolith.vision).
 
 ## Setup + Run
 
 - Install rust toolchain
-- Install node + npm
 - Have GNU `make`
 - Get access to a mongodb server
 - Fill in `.env.example` with mongodb credentials and admin `key` and move it to `.env`
 - Finally, run:
 
 ```bash
-make install
-make build_frontend
-make build_backend
+make build
 make run
 ```
 
