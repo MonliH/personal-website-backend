@@ -9,7 +9,7 @@ use std::sync::Arc;
 use mongodb::bson;
 use mongodb::bson::doc;
 use mongodb::{
-    options::{ClientOptions, UpdateModifications, UpdateOptions},
+    options::{FindOptions, UpdateModifications, UpdateOptions},
     Client, Collection,
 };
 
@@ -122,7 +122,29 @@ impl DB {
         Ok(blog)
     }
 
-    pub async fn get_recent_blogs<'a>(
+    pub async fn get_all_urls(&self) -> Result<Vec<String>, Box<dyn Error>> {
+        let blog_urls: Vec<String> = 
+            self.blog_collection.find(
+                None, 
+                Some(
+                    FindOptions::builder()
+                    .projection(doc!{"_id": 0, "url": 1})
+                    .build()
+                )
+            ).await?
+            .map(|document| {
+                Ok(document
+                    .map_err(|e| Box::new(e) as Box<dyn Error>)?
+                    .get_str("url")
+                    .unwrap()
+                    .to_string())
+            })
+            .collect::<Result<Vec<String>, Box<dyn Error>>>()
+            .await?;
+        Ok(blog_urls)
+    }
+
+    pub async fn get_recent_blogs(
         &self,
         start: u32,
         end: u32,

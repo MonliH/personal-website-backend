@@ -7,21 +7,16 @@ mod submission;
 
 use db::{DBState, DB};
 
-use actix_files::{Files, NamedFile};
 use actix_ratelimit::{MemoryStore, MemoryStoreActor, RateLimiter};
-use actix_web::{web, App, HttpRequest, HttpServer, middleware::NormalizePath};
+use actix_cors::Cors;
+use actix_web::{App, HttpServer};
 
 use dotenv::dotenv;
 use env_logger::Env;
 
 use std::env;
-use std::io;
 use std::sync::Arc;
 use std::time::Duration;
-
-async fn home(_req: HttpRequest) -> io::Result<NamedFile> {
-    Ok(NamedFile::open("www/build/index.html")?)
-}
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -42,18 +37,15 @@ async fn main() -> std::io::Result<()> {
             .service(public_blog::blog_post_by_name)
             .service(public_blog::blog_post_amounts)
             .service(public_blog::blog_entries)
+            .service(public_blog::all_blog_urls)
             .service(embeds::discord_embed_json)
             .service(embeds::simple_embed)
-            .service(
-                Files::new("/*", "www/build/")
-                    .index_file("www/build/index.html")
-                    .default_handler(web::route().to(home)),
-            )
             .wrap(
                 RateLimiter::new(MemoryStoreActor::from(store.clone()).start())
                     .with_interval(Duration::from_secs(60))
                     .with_max_requests(100),
             )
+            .wrap(Cors::permissive())
     })
     .bind(env::var("HOST_IP_HTTP").expect("No HOST_IP variable found"))?
     .run();

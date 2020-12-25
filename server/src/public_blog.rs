@@ -2,7 +2,7 @@ use actix_web::{get, web, HttpRequest, HttpResponse};
 
 use crate::db::DBState;
 
-#[get("/api/blog/entries/{starting}/{ending}")]
+#[get("/blog/entries/{starting}/{ending}")]
 pub async fn blog_entries(
     db: web::Data<DBState>,
     web::Path((starting, ending)): web::Path<(usize, usize)>,
@@ -36,7 +36,37 @@ pub async fn blog_entries(
         })
 }
 
-#[get("/api/blog/pages")]
+#[get("/blog/all_urls")]
+pub async fn all_blog_urls(
+    db: web::Data<DBState>,
+) -> HttpResponse {
+    let len = match db.get_num_of_blogs().await {
+        Ok(n) => n,
+        Err(_) => return HttpResponse::NotFound().body("length not found"),
+    };
+
+    // Edge case
+    if len == 0 {
+        return HttpResponse::Ok().body("[]");
+    }
+
+    HttpResponse::Ok()
+        .content_type("application/json")
+        .body(
+            serde_json::to_string(
+                match &db.get_all_urls().await {
+                    Ok(urls) => urls,
+                    Err(e) => {
+                        return HttpResponse::InternalServerError()
+                            .body(format!("failed to get query: {}", e))
+                    }
+                },
+            )
+            .expect("Failed to serialize blog posts")
+        )
+}
+
+#[get("/blog/pages")]
 pub async fn blog_post_amounts(db: web::Data<DBState>, _req: HttpRequest) -> HttpResponse {
     HttpResponse::Ok()
         .content_type("text/plain")
@@ -49,7 +79,7 @@ pub async fn blog_post_amounts(db: web::Data<DBState>, _req: HttpRequest) -> Htt
         })
 }
 
-#[get("/api/blog/entry/{name}")]
+#[get("/blog/entry/{name}")]
 pub async fn blog_post_by_name(
     db: web::Data<DBState>,
     web::Path(name): web::Path<String>,
