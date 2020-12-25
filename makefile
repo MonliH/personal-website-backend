@@ -1,4 +1,4 @@
-build_backend:
+build:
 	cd server && \
 	cargo build --release --target-dir ../server_target
 
