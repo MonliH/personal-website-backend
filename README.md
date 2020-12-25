@@ -1,6 +1,9 @@
 # personal-website-backend
 
-The backend for my personal website. Live at [monolith.vision](https://monolith.vision).
+The backend for my personal website. Live at [monolith.vision](https://monolith.vision). This server is purely backend, and doesn't serve the frontend at all. It acts as an API to store and serve my blog pages to the frontend, which is hosted on a seperate server and [repo](https://github.com/monlih/personal-website-frontend).
+
+A flowchart showing the architecture of my personal website:
+![Flowchart](./assets/architecture.png)
 
 ## Setup + Run
 
