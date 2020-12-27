@@ -45,7 +45,15 @@ async fn main() -> std::io::Result<()> {
                     .with_interval(Duration::from_secs(60))
                     .with_max_requests(100),
             )
-            .wrap(Cors::permissive())
+            .wrap(
+                Cors::default()
+                    .allowed_origin(
+                        &env::var("FRONTEND_DOMAIN").expect("No FRONTEND_DOMAIN variable found")
+                    )
+                    .allowed_origin(
+                        &env::var("FRONTEND_DOMAIN_ALT").expect("No FRONTEND_DOMAIN_ALT variable found")
+                    )
+            )
     })
     .bind(env::var("HOST_IP_HTTP").expect("No HOST_IP variable found"))?
     .run();
