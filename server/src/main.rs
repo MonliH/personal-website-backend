@@ -31,15 +31,6 @@ async fn main() -> std::io::Result<()> {
     let server = HttpServer::new(move || {
         App::new()
             .data(Arc::clone(&db) as DBState)
-            .service(admin::admin_delete)
-            .service(admin::admin_edits)
-            .service(admin::admin_key)
-            .service(public_blog::blog_post_by_name)
-            .service(public_blog::blog_post_amounts)
-            .service(public_blog::blog_entries)
-            .service(public_blog::all_blog_urls)
-            .service(embeds::discord_embed_json)
-            .service(embeds::simple_embed)
             .wrap(
                 RateLimiter::new(MemoryStoreActor::from(store.clone()).start())
                     .with_interval(Duration::from_secs(60))
@@ -54,6 +45,15 @@ async fn main() -> std::io::Result<()> {
                         &env::var("FRONTEND_DOMAIN_ALT").expect("No FRONTEND_DOMAIN_ALT variable found")
                     )
             )
+            .service(admin::admin_delete)
+            .service(admin::admin_edits)
+            .service(admin::admin_key)
+            .service(public_blog::blog_post_by_name)
+            .service(public_blog::blog_post_amounts)
+            .service(public_blog::blog_entries)
+            .service(public_blog::all_blog_urls)
+            .service(embeds::discord_embed_json)
+            .service(embeds::simple_embed)
     })
     .bind(env::var("HOST_IP_HTTP").expect("No HOST_IP variable found"))?
     .run();
