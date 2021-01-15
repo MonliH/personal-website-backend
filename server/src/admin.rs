@@ -1,56 +1,56 @@
 use crate::blog::BlogPost;
 use crate::db::DBState;
 
-use actix_web::{post, web, HttpResponse};
-use serde::Deserialize;
+use actix_web::{get, delete, put, web, HttpResponse};
+use actix_web_httpauth::extractors::basic::BasicAuth;
 
 use std::env;
+use std::borrow::Cow;
 
-#[derive(Deserialize)]
-pub struct AdminEdit {
-    pub key: String,
-    pub blog: BlogPost,
+pub fn validate_key(username: &Cow<'static, str>, pwd: &Cow<'static, str>) -> bool {
+    username == &env::var("ADMIN_USERNAME").expect(KEY_ERROR) && pwd == &env::var("ADMIN_KEY").expect(KEY_ERROR)
 }
 
 const KEY_ERROR: &str = "Could not find ADMIN_KEY variable, did you forget to set it?";
 
-#[post("/admin/edit")]
-pub async fn admin_edits(db: web::Data<DBState>, req: web::Json<AdminEdit>) -> HttpResponse {
-    if req.key == env::var("ADMIN_KEY").expect(KEY_ERROR) {
-        match db.upsert_blog(&req.blog).await {
+#[put("/admin/edit")]
+pub async fn admin_edits(db: web::Data<DBState>, blog: web::Json<BlogPost>, auth: BasicAuth) -> HttpResponse {
+    match auth.password() {
+        Some(pwd) if validate_key(auth.user_id(), pwd) => match db.upsert_blog(&blog).await {
             Ok(_) => HttpResponse::Ok().body(""),
             Err(e) => {
                 HttpResponse::InternalServerError().body(format!("failed to set value: {}", e))
             }
         }
-    } else {
-        HttpResponse::Forbidden().body("incorrect key")
-    }
-}
-
-#[derive(Deserialize)]
-pub struct AdminDelete {
-    pub key: String,
-    pub url: String,
-}
-
-#[post("/admin/delete")]
-pub async fn admin_delete(db: web::Data<DBState>, req: web::Json<AdminDelete>) -> HttpResponse {
-    if req.key == env::var("ADMIN_KEY").expect(KEY_ERROR) {
-        match db.delete_blog(&req.url).await {
-            Ok(_) => HttpResponse::Ok().body(""),
-            Err(e) => HttpResponse::NotFound().body(format!("error deleting: {}", e)),
+        _ => {
+            HttpResponse::Forbidden().body("incorrect key")
         }
-    } else {
-        HttpResponse::Forbidden().body("incorrect key")
     }
 }
 
-#[post("/admin/key")]
-pub async fn admin_key(req: String) -> HttpResponse {
-    if req == env::var("ADMIN_KEY").expect(KEY_ERROR) {
-        return HttpResponse::Ok().body("correct key");
-    } else {
-        return HttpResponse::Forbidden().body("incorrect key");
+#[delete("/admin/delete/{url}")]
+pub async fn admin_delete(db: web::Data<DBState>, web::Path(url): web::Path<String>, auth: BasicAuth) -> HttpResponse {
+    match auth.password() {
+        Some(pwd) if validate_key(auth.user_id(), pwd) => {
+            match db.delete_blog(&url).await {
+                Ok(_) => HttpResponse::Ok().body(""),
+                Err(e) => HttpResponse::NotFound().body(format!("error deleting: {}", e)),
+            }
+        }
+        _ => {
+            HttpResponse::Forbidden().body("incorrect key")
+        }
+    }
+}
+
+#[get("/admin/key")]
+pub async fn admin_key(auth: BasicAuth) -> HttpResponse {
+    match auth.password() {
+        Some(pwd) if validate_key(auth.user_id(), pwd) => {
+            HttpResponse::Ok().body("correct key")
+        }
+        _ => {
+            HttpResponse::Forbidden().body("incorrect key")
+        }
     }
 }
