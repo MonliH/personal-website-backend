@@ -37,13 +37,17 @@ async fn main() -> std::io::Result<()> {
                     .with_max_requests(100),
             )
             .wrap(
-                Cors::default()
-                    .allowed_origin(
-                        &env::var("FRONTEND_DOMAIN").expect("No FRONTEND_DOMAIN variable found")
-                    )
-                    .allowed_origin(
-                        &env::var("FRONTEND_DOMAIN_ALT").expect("No FRONTEND_DOMAIN_ALT variable found")
-                    )
+                if env::var("DEVELOPMENT_TEST").is_ok() {
+                    Cors::permissive()
+                } else {
+                    Cors::default()
+                        .allowed_origin(
+                            &env::var("FRONTEND_DOMAIN").expect("No FRONTEND_DOMAIN variable found")
+                        )
+                        .allowed_origin(
+                            &env::var("FRONTEND_DOMAIN_ALT").expect("No FRONTEND_DOMAIN_ALT variable found")
+                        )
+                }
             )
             .service(admin::admin_delete)
             .service(admin::admin_edits)
