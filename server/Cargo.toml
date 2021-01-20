@@ -20,3 +20,5 @@ tokio = { version = "0.2", features = ["stream"] }
 env_logger = "0.7"
 actix-ratelimit = { git = "https://github.com/TerminalWitchcraft/actix-ratelimit.git" }
 actix-web-httpauth = "0.5.0"
+pulldown-cmark = "0.8.0"
+syntect = "4.4"

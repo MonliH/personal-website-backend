@@ -1,6 +1,7 @@
 use actix_web::{get, web, HttpRequest, HttpResponse};
 
 use crate::db::DBState;
+use crate::blog::{BlogPostNoHTML, BlogPostDisplay};
 
 #[get("/blog/entries/{starting}/{ending}")]
 pub async fn blog_entries(
@@ -79,14 +80,29 @@ pub async fn blog_post_amounts(db: web::Data<DBState>, _req: HttpRequest) -> Htt
         })
 }
 
-#[get("/blog/entry/{name}")]
-pub async fn blog_post_by_name(
+#[get("/blog/entry/display/{name}")]
+pub async fn blog_post_display_by_name(
     db: web::Data<DBState>,
     web::Path(name): web::Path<String>,
 ) -> HttpResponse {
     HttpResponse::Ok()
         .content_type("application/json")
-        .body(match db.get_blog(&name).await {
+        .body(match db.get_blog::<BlogPostDisplay>(&name, Some(&["html_preview", "md_contents"])).await {
+            Ok(post) => serde_json::to_string(&post).expect("Failed to serialize blog"),
+            Err(e) => {
+                return HttpResponse::NotFound().body(format!("post not found: {}", e));
+            }
+        })
+}
+
+#[get("/blog/entry/admin/{name}")]
+pub async fn blog_post_admin_by_name(
+    db: web::Data<DBState>,
+    web::Path(name): web::Path<String>,
+) -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type("application/json")
+        .body(match db.get_blog::<BlogPostNoHTML>(&name, Some(&["html_contents", "html_preview"])).await {
             Ok(post) => serde_json::to_string(&post).expect("Failed to serialize blog"),
             Err(e) => {
                 return HttpResponse::NotFound().body(format!("post not found: {}", e));

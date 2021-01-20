@@ -1,4 +1,4 @@
-use crate::blog::BlogPost;
+use crate::blog::BlogPostNoHTML;
 use crate::db::DBState;
 
 use actix_web::{get, delete, put, web, HttpResponse};
@@ -14,9 +14,9 @@ pub fn validate_key(username: &Cow<'static, str>, pwd: &Cow<'static, str>) -> bo
 const KEY_ERROR: &str = "Could not find ADMIN_KEY variable, did you forget to set it?";
 
 #[put("/admin/edit")]
-pub async fn admin_edits(db: web::Data<DBState>, blog: web::Json<BlogPost>, auth: BasicAuth) -> HttpResponse {
+pub async fn admin_edits(db: web::Data<DBState>, blog: web::Json<BlogPostNoHTML>, auth: BasicAuth) -> HttpResponse {
     match auth.password() {
-        Some(pwd) if validate_key(auth.user_id(), pwd) => match db.upsert_blog(&blog).await {
+        Some(pwd) if validate_key(auth.user_id(), pwd) => match db.upsert_blog(&(blog.into_inner().render())).await {
             Ok(_) => HttpResponse::Ok().body(""),
             Err(e) => {
                 HttpResponse::InternalServerError().body(format!("failed to set value: {}", e))

@@ -1,4 +1,4 @@
-use crate::blog::BlogPost;
+use crate::blog::{BlogPostHTML, BlogPostPreview};
 use crate::submission::Submission;
 
 use std::convert::TryInto;
@@ -6,12 +6,13 @@ use std::env;
 use std::error::Error;
 use std::sync::Arc;
 
-use mongodb::bson;
-use mongodb::bson::doc;
+use mongodb::bson::{self, doc, document::Document};
 use mongodb::{
-    options::{FindOptions, UpdateModifications, UpdateOptions},
+    options::{FindOneOptions, FindOptions, UpdateModifications, UpdateOptions},
     Client, Collection,
 };
+
+use serde::de::DeserializeOwned;
 
 use tokio::stream::StreamExt;
 
@@ -93,7 +94,7 @@ impl DB {
             .try_into()?)
     }
 
-    pub async fn upsert_blog(&self, blog: &BlogPost) -> Result<(), Box<dyn Error>> {
+    pub async fn upsert_blog(&self, blog: &BlogPostHTML) -> Result<(), Box<dyn Error>> {
         self.blog_collection
             .update_one(
                 doc! { "url": &blog.url },
@@ -111,10 +112,26 @@ impl DB {
         Ok(())
     }
 
-    pub async fn get_blog<'a>(&self, blog_url: &'a str) -> Result<BlogPost, Box<dyn Error>> {
-        let blog: BlogPost = bson::from_document(
+    pub async fn get_blog<'a, T>(
+        &self,
+        blog_url: &'a str,
+        exclude: Option<&[&'a str]>
+    ) -> Result<T, Box<dyn Error>> 
+        where T: DeserializeOwned
+    {
+        let blog: T = bson::from_document(
             self.blog_collection
-                .find_one(doc! { "url": &blog_url }, None)
+                .find_one(
+                    doc! { "url": &blog_url },
+                    FindOneOptions::builder()
+                        .projection(exclude.map(|keys| {
+                            keys.iter().fold(Document::new(), |mut doc, key| {
+                                doc.insert(*key, 0);
+                                doc
+                            })
+                        }))
+                        .build()
+                )
                 .await?
                 .ok_or("Could not find blog post")?,
         )?;
@@ -148,20 +165,15 @@ impl DB {
         &self,
         start: u32,
         end: u32,
-    ) -> Result<Vec<BlogPost>, Box<dyn Error>> {
-        let blogs: Vec<BlogPost> = self
+    ) -> Result<Vec<BlogPostPreview>, Box<dyn Error>> {
+        let blogs: Vec<BlogPostPreview> = self
             .blog_collection
             .aggregate(
                 vec![
-                    doc! {
-                        "$sort": { "date": -1 }
-                    },
-                    doc! {
-                        "$limit": start + end,
-                    },
-                    doc! {
-                        "$skip": start
-                    },
+                    doc! { "$sort": { "date": -1 } },
+                    doc! { "$limit": start + end, },
+                    doc! { "$skip": start },
+                    doc! { "$unset": ["html_contents", "md_contents"] },
                 ],
                 None,
             )
@@ -170,7 +182,7 @@ impl DB {
                 bson::from_document(document.map_err(|e| Box::new(e) as Box<dyn Error>)?)
                     .map_err(|e| Box::new(e) as Box<dyn Error>)
             })
-            .collect::<Result<Vec<BlogPost>, Box<dyn Error>>>()
+            .collect::<Result<Vec<BlogPostPreview>, Box<dyn Error>>>()
             .await?;
         Ok(blogs)
     }

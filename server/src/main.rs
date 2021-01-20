@@ -31,6 +31,7 @@ async fn main() -> std::io::Result<()> {
     let server = HttpServer::new(move || {
         App::new()
             .data(Arc::clone(&db) as DBState)
+
             .wrap(
                 RateLimiter::new(MemoryStoreActor::from(store.clone()).start())
                     .with_interval(Duration::from_secs(60))
@@ -49,13 +50,17 @@ async fn main() -> std::io::Result<()> {
                         )
                 }
             )
+
             .service(admin::admin_delete)
             .service(admin::admin_edits)
             .service(admin::admin_key)
-            .service(public_blog::blog_post_by_name)
+
+            .service(public_blog::blog_post_display_by_name)
+            .service(public_blog::blog_post_admin_by_name)
             .service(public_blog::blog_post_amounts)
             .service(public_blog::blog_entries)
             .service(public_blog::all_blog_urls)
+
             .service(embeds::discord_embed_json)
             .service(embeds::simple_embed)
     })
