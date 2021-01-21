@@ -61,6 +61,8 @@ async fn main() -> std::io::Result<()> {
             .service(public_blog::blog_entries)
             .service(public_blog::all_blog_urls)
 
+            .service(submission::new_contact)
+
             .service(embeds::discord_embed_json)
             .service(embeds::simple_embed)
     })

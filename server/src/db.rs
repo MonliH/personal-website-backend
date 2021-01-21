@@ -1,5 +1,5 @@
 use crate::blog::{BlogPostHTML, BlogPostPreview};
-use crate::submission::Submission;
+use crate::submission::SubmissionDate;
 
 use std::convert::TryInto;
 use std::env;
@@ -44,7 +44,7 @@ impl DB {
             .try_into()?)
     }
 
-    pub async fn insert_submission(&self, submission: Submission) -> Result<(), Box<dyn Error>> {
+    pub async fn insert_submission(&self, submission: SubmissionDate) -> Result<(), Box<dyn Error>> {
         self.contact_collection
             .update_one(
                 doc! {},
@@ -59,8 +59,8 @@ impl DB {
         &self,
         start: u32,
         end: u32,
-    ) -> Result<Vec<Submission>, Box<dyn Error>> {
-        let submissions: Vec<Submission> = self
+    ) -> Result<Vec<SubmissionDate>, Box<dyn Error>> {
+        let submissions: Vec<SubmissionDate> = self
             .contact_collection
             .aggregate(
                 vec![
@@ -81,7 +81,7 @@ impl DB {
                 bson::from_document(document.map_err(|e| Box::new(e) as Box<dyn Error>)?)
                     .map_err(|e| Box::new(e) as Box<dyn Error>)
             })
-            .collect::<Result<Vec<Submission>, Box<dyn Error>>>()
+            .collect::<Result<Vec<SubmissionDate>, Box<dyn Error>>>()
             .await?;
         Ok(submissions)
     }
