@@ -35,7 +35,7 @@ pub async fn simple_embed(web::Query(q): web::Query<EmbedQuery>) -> HttpResponse
         q.text
             .map(|val| Cow::Owned(val))
             .unwrap_or(Cow::Borrowed("Nothing To See Here..."))
-    ))
+    ));
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

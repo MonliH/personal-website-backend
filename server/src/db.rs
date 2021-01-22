@@ -25,10 +25,9 @@ pub struct DB {
 
 impl DB {
     pub async fn new() -> Result<Self, Box<dyn Error>> {
-        let client = Client::with_uri_str(
-            &env::var("MONGO_URL").expect("Non-existent MONGO_URL entry."),
-        )
-        .await?;
+        let client =
+            Client::with_uri_str(&env::var("MONGO_URL").expect("Non-existent MONGO_URL entry."))
+                .await?;
 
         Ok(Self {
             blog_collection: client.database("blog").collection("blog_pages"),
@@ -44,13 +43,12 @@ impl DB {
             .try_into()?)
     }
 
-    pub async fn insert_submission(&self, submission: SubmissionDate) -> Result<(), Box<dyn Error>> {
+    pub async fn insert_submission(
+        &self,
+        submission: SubmissionDate,
+    ) -> Result<(), Box<dyn Error>> {
         self.contact_collection
-            .update_one(
-                doc! {},
-                UpdateModifications::Document(bson::to_document(&submission)?),
-                None,
-            )
+            .insert_one(bson::to_document(&submission)?, None)
             .await?;
         Ok(())
     }
@@ -65,7 +63,7 @@ impl DB {
             .aggregate(
                 vec![
                     doc! {
-                        "$sort": { "date": -1 }
+                        "$sort": { "_id": -1 }
                     },
                     doc! {
                         "$limit": start + end,
@@ -115,9 +113,10 @@ impl DB {
     pub async fn get_blog<'a, T>(
         &self,
         blog_url: &'a str,
-        exclude: Option<&[&'a str]>
-    ) -> Result<T, Box<dyn Error>> 
-        where T: DeserializeOwned
+        exclude: Option<&[&'a str]>,
+    ) -> Result<T, Box<dyn Error>>
+    where
+        T: DeserializeOwned,
     {
         let blog: T = bson::from_document(
             self.blog_collection
@@ -130,7 +129,7 @@ impl DB {
                                 doc
                             })
                         }))
-                        .build()
+                        .build(),
                 )
                 .await?
                 .ok_or("Could not find blog post")?,
@@ -140,15 +139,17 @@ impl DB {
     }
 
     pub async fn get_all_urls(&self) -> Result<Vec<String>, Box<dyn Error>> {
-        let blog_urls: Vec<String> = 
-            self.blog_collection.find(
-                None, 
+        let blog_urls: Vec<String> = self
+            .blog_collection
+            .find(
+                None,
                 Some(
                     FindOptions::builder()
-                    .projection(doc!{"_id": 0, "url": 1})
-                    .build()
-                )
-            ).await?
+                        .projection(doc! {"_id": 0, "url": 1})
+                        .build(),
+                ),
+            )
+            .await?
             .map(|document| {
                 Ok(document
                     .map_err(|e| Box::new(e) as Box<dyn Error>)?
