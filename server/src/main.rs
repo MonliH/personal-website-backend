@@ -63,6 +63,7 @@ async fn main() -> std::io::Result<()> {
             .service(submission::new_contact)
             .service(submission::number_of_contacts)
             .service(submission::contact_range)
+            .service(submission::delete_contact)
             .service(embeds::discord_embed_json)
             .service(embeds::simple_embed)
     })
