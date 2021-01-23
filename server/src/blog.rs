@@ -66,15 +66,15 @@ impl BlogPostNoHTML {
         s
     }
 
-    pub fn render(self) -> BlogPostHTML {
-        return BlogPostHTML {
-            title: self.title,
+    pub fn render(&self) -> BlogPostHTML {
+        BlogPostHTML {
+            title: &self.title[..],
             date: self.date,
-            url: self.url,
+            url: &self.url[..],
             html_preview: Self::render_md(self.md_contents.split(CUT_VALUE).next().unwrap()),
             html_contents: Self::render_md(&self.md_contents.replacen(CUT_VALUE, "", 1)),
-            md_contents: self.md_contents.clone(),
-        };
+            md_contents: &self.md_contents,
+        }
     }
 }
 
@@ -99,12 +99,12 @@ pub struct BlogPostDisplay {
 #[derive(Debug, Serialize, Deserialize)]
 /// Blog post with full HTML and preview
 /// Used in DB
-pub struct BlogPostHTML {
+pub struct BlogPostHTML<'a> {
     pub html_contents: String,
     pub html_preview: String,
 
-    pub title: String,
-    pub md_contents: String,
+    pub title: &'a str,
+    pub url: &'a str,
+    pub md_contents: &'a str,
     pub date: NaiveDate,
-    pub url: String,
 }

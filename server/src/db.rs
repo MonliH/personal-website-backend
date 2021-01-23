@@ -43,12 +43,16 @@ impl DB {
             .try_into()?)
     }
 
-    pub async fn insert_submission(
-        &self,
-        submission: SubmissionDate,
-    ) -> Result<(), Box<dyn Error>> {
+    pub async fn insert_contact(&self, submission: SubmissionDate) -> Result<(), Box<dyn Error>> {
         self.contact_collection
             .insert_one(bson::to_document(&submission)?, None)
+            .await?;
+        Ok(())
+    }
+
+    pub async fn delete_contact<'a>(&self, _id: &'a str) -> Result<(), Box<dyn Error>> {
+        self.blog_collection
+            .delete_one(doc! { "_id": _id }, None)
             .await?;
         Ok(())
     }
@@ -92,11 +96,11 @@ impl DB {
             .try_into()?)
     }
 
-    pub async fn upsert_blog(&self, blog: &BlogPostHTML) -> Result<(), Box<dyn Error>> {
+    pub async fn upsert_blog<'a>(&self, blog: BlogPostHTML<'a>) -> Result<(), Box<dyn Error>> {
         self.blog_collection
             .update_one(
                 doc! { "url": &blog.url },
-                UpdateModifications::Document(bson::to_document(blog)?),
+                UpdateModifications::Document(bson::to_document(&blog)?),
                 UpdateOptions::builder().upsert(true).build(),
             )
             .await?;

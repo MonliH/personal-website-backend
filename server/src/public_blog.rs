@@ -15,10 +15,8 @@ pub async fn blog_entries(
 
     // Edge case
     if starting == 0 && ending == 0 {
-        return HttpResponse::Ok().body("[]");
-    }
-
-    if ending > len || starting > len {
+        HttpResponse::Ok().body("[]")
+    } else if ending > len || starting > len {
         // Out of range
         HttpResponse::RangeNotSatisfiable().body("specified range out of range")
     } else {

@@ -1,9 +1,11 @@
-use crate::admin::{bad_key, validate_key};
+use crate::admin::protected;
 use crate::blog::BlogPostNoHTML;
 use crate::db::DBState;
 
 use actix_web::{delete, get, put, web, HttpResponse};
 use actix_web_httpauth::extractors::basic::BasicAuth;
+
+use std::sync::Arc;
 
 #[put("/admin/edit")]
 pub async fn admin_edits(
@@ -11,17 +13,15 @@ pub async fn admin_edits(
     blog: web::Json<BlogPostNoHTML>,
     auth: BasicAuth,
 ) -> HttpResponse {
-    match auth.password() {
-        Some(pwd) if validate_key(auth.user_id(), pwd) => {
-            match db.upsert_blog(&(blog.into_inner().render())).await {
-                Ok(_) => HttpResponse::Ok().body(""),
-                Err(e) => {
-                    HttpResponse::InternalServerError().body(format!("failed to set value: {}", e))
-                }
+    protected(auth.user_id(), auth.password(), || async {
+        match Arc::clone(db.get_ref()).upsert_blog(blog.render()).await {
+            Ok(_) => HttpResponse::Ok().body(""),
+            Err(e) => {
+                HttpResponse::InternalServerError().body(format!("failed to set value: {}", e))
             }
         }
-        _ => bad_key(),
-    }
+    })
+    .await
 }
 
 #[delete("/admin/delete/{url}")]
@@ -30,19 +30,19 @@ pub async fn admin_delete(
     web::Path(url): web::Path<String>,
     auth: BasicAuth,
 ) -> HttpResponse {
-    match auth.password() {
-        Some(pwd) if validate_key(auth.user_id(), pwd) => match db.delete_blog(&url).await {
+    protected(auth.user_id(), auth.password(), || async {
+        match db.delete_blog(&url).await {
             Ok(_) => HttpResponse::Ok().body(""),
             Err(e) => HttpResponse::NotFound().body(format!("error deleting: {}", e)),
-        },
-        _ => bad_key(),
-    }
+        }
+    })
+    .await
 }
 
 #[get("/admin/key")]
 pub async fn admin_key(auth: BasicAuth) -> HttpResponse {
-    match auth.password() {
-        Some(pwd) if validate_key(auth.user_id(), pwd) => HttpResponse::Ok().body("correct key"),
-        _ => bad_key(),
-    }
+    protected(auth.user_id(), auth.password(), || async {
+        HttpResponse::Ok().body("correct key")
+    })
+    .await
 }

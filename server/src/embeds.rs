@@ -11,7 +11,7 @@ pub struct EmbedQuery {
 
 #[get("/discord-embed")]
 pub async fn simple_embed(web::Query(q): web::Query<EmbedQuery>) -> HttpResponse {
-    return HttpResponse::Ok().content_type("text/html").body(format!(
+    HttpResponse::Ok().content_type("text/html").body(format!(
         r#"<!DOCTYPE html>
 <html prefix="og: https://ogp.me/ns#">
   <head>
@@ -35,7 +35,7 @@ pub async fn simple_embed(web::Query(q): web::Query<EmbedQuery>) -> HttpResponse
         q.text
             .map(|val| Cow::Owned(val))
             .unwrap_or(Cow::Borrowed("Nothing To See Here..."))
-    ));
+    ))
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
