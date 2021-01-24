@@ -6,7 +6,7 @@ use std::env;
 use std::error::Error;
 use std::sync::Arc;
 
-use mongodb::bson::{self, doc, document::Document};
+use mongodb::bson::{self, doc, document::Document, oid::ObjectId};
 use mongodb::{
     options::{FindOneOptions, FindOptions, UpdateModifications, UpdateOptions},
     Client, Collection,
@@ -35,6 +35,17 @@ impl DB {
         })
     }
 
+    pub async fn get_single_contact(&self, id: &str) -> Result<SubmissionDate, Box<dyn Error>> {
+        let blog = bson::from_document(
+            self.contact_collection
+                .find_one(doc! { "_id": ObjectId::with_string(id)? }, None)
+                .await?
+                .ok_or("Could not find submission")?,
+        )?;
+
+        Ok(blog)
+    }
+
     pub async fn get_num_of_contacts(&self) -> Result<usize, Box<dyn Error>> {
         Ok(self
             .contact_collection
@@ -51,8 +62,8 @@ impl DB {
     }
 
     pub async fn delete_contact<'a>(&self, _id: &'a str) -> Result<(), Box<dyn Error>> {
-        self.blog_collection
-            .delete_one(doc! { "_id": _id }, None)
+        self.contact_collection
+            .delete_one(doc! { "_id": ObjectId::with_string(_id)? }, None)
             .await?;
         Ok(())
     }

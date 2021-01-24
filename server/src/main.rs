@@ -61,6 +61,7 @@ async fn main() -> std::io::Result<()> {
             .service(public_blog::blog_entries)
             .service(public_blog::all_blog_urls)
             .service(submission::new_contact)
+            .service(submission::get_single_contact)
             .service(submission::number_of_contacts)
             .service(submission::contact_range)
             .service(submission::delete_contact)

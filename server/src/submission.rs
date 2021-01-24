@@ -77,6 +77,25 @@ pub async fn number_of_contacts(db: web::Data<DBState>, auth: BasicAuth) -> Http
     .await
 }
 
+#[get("/admin/contact/get/{id}")]
+pub async fn get_single_contact(
+    db: web::Data<DBState>,
+    web::Path(id): web::Path<String>,
+    auth: BasicAuth,
+) -> HttpResponse {
+    protected(auth.user_id(), auth.password(), || async {
+        match db.get_single_contact(&id).await {
+            Ok(submission) => HttpResponse::Ok()
+                .content_type("application/json")
+                .body(serde_json::to_string(&submission).expect("Failed to serialize submission")),
+            Err(e) => {
+                HttpResponse::InternalServerError().body(format!("failed to get contact: {}", e))
+            }
+        }
+    })
+    .await
+}
+
 #[get("/admin/contact/range/{start}/{end}")]
 pub async fn contact_range(
     db: web::Data<DBState>,
