@@ -26,8 +26,7 @@ impl BlogPostNoHTML {
 
         // Setup for syntect to highlight (specifically) Rust code
         let ss = SyntaxSet::load_defaults_newlines();
-        let ts = ThemeSet::load_defaults();
-        let theme = &ts.themes["base16-ocean.dark"];
+        let theme = ThemeSet::get_theme("./Styrokai.tmTheme").expect("Bad theme");
 
         let mut new_p = Vec::new();
         let mut to_highlight = String::new();
@@ -43,7 +42,8 @@ impl BlogPostNoHTML {
                         let syntax = ss
                             .find_syntax_by_token(code_block_kind.as_ref())
                             .unwrap_or_else(|| ss.find_syntax_plain_text());
-                        let html = highlighted_html_for_string(&to_highlight, &ss, &syntax, &theme);
+                        let html =
+                            highlighted_html_for_string(&to_highlight, &ss, &syntax, &theme);
                         new_p.push(Event::Html(CowStr::Boxed(html.into_boxed_str())));
                         to_highlight = String::new();
                         in_code_block = None;

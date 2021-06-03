@@ -4,3 +4,4 @@ node_modules
 cert.pem
 key.pem
 .env
+server/target/
