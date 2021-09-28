@@ -18,11 +18,11 @@ pub async fn simple_embed(web::Query(q): web::Query<EmbedQuery>) -> HttpResponse
     <title>Jonathan Li's Embeds</title>
     <meta content="" property="og:title" />
     <meta content="" property="og:description" />
-    <meta content="https://api.jonathanli.tech/magic.png" property="og:image" />
+    <meta content="https://api.jonat.li/magic.png" property="og:image" />
     <meta name="theme-color" content="\#{}" />
     <link
       type="application/json+oembed"
-      href="https://api.jonathanli.tech/discord-embed/json?author={}"
+      href="https://api.jonat.li/discord-embed/json?author={}"
     />
   </head>
   <body>
